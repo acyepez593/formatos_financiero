@@ -99,46 +99,13 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
-                'group_name' => 'estado',
+                'group_name' => 'control_previo',
                 'permissions' => [
-                    // estado Permissions
-                    'estado.create',
-                    'estado.view',
-                    'estado.edit',
-                    'estado.delete',
-                    
-                ]
-            ],
-            [
-                'group_name' => 'tipoRespuesta',
-                'permissions' => [
-                    // tipoRespuesta Permissions
-                    'tipoRespuesta.create',
-                    'tipoRespuesta.view',
-                    'tipoRespuesta.edit',
-                    'tipoRespuesta.delete',
-                    
-                ]
-            ],
-            [
-                'group_name' => 'semaforo',
-                'permissions' => [
-                    // semaforo Permissions
-                    'semaforo.create',
-                    'semaforo.view',
-                    'semaforo.edit',
-                    'semaforo.delete',
-                    
-                ]
-            ],
-            [
-                'group_name' => 'expediente',
-                'permissions' => [
-                    // expediente Permissions
-                    'expediente.create',
-                    'expediente.view',
-                    'expediente.edit',
-                    'expediente.delete',
+                    // control_previo Permissions
+                    'control_previo.create',
+                    'control_previo.view',
+                    'control_previo.edit',
+                    'control_previo.delete',
                     
                 ]
             ],
