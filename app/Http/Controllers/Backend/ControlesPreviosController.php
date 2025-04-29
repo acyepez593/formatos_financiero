@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ControlPrevioController extends Controller
+class ControlesPreviosController extends Controller
 {
     public function index(): Renderable
     {
@@ -43,7 +43,6 @@ class ControlPrevioController extends Controller
             'estructurasFormatoPago' => $estructurasFormatoPago,
             'tiposFormato' => $tiposFormato,
             'documentosHabilitantes' => $documentosHabilitantes,
-            'documentosHabilitantes' => $documentosHabilitantes,
             'formatosPago' => $formatosPago,
             'responsables' => $responsables
         ]);
@@ -53,19 +52,11 @@ class ControlPrevioController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['controlPrevio.create']);
 
-        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::get(["nombre", "id"]);
-        $estructurasFormatoPago = EstructuraFormatoPago::get(["nombre", "id"]);
-        $tiposFormato = TipoFormato::get(["nombre", "id"]);
-        $documentosHabilitantes = DocumentosHabilitantes::get(["nombre", "id"]);
-        $formatosPago = FormatoPago::get(["nombre", "id"]);
+        $tiposFormato = TipoFormato::get(["nombre", "id"])->pluck('nombre','id');
         $responsables = Admin::get(["name", "id"])->pluck('name','id');
 
         return view('backend.pages.controlesPrevios.create', [
-            'estructurasDocumentosHabilitantes' => $estructurasDocumentosHabilitantes,
-            'estructurasFormatoPago' => $estructurasFormatoPago,
             'tiposFormato' => $tiposFormato,
-            'documentosHabilitantes' => $documentosHabilitantes,
-            'formatosPago' => $formatosPago,
             'responsables' => $responsables,
             'roles' => Role::all(),
         ]);
@@ -166,6 +157,22 @@ class ControlPrevioController extends Controller
   
         return response()->json($data);
 
+    }
+
+    public function getFormatoByTipoFormato(Request $request): JsonResponse
+    {
+        $this->checkAuthorization(auth()->user(), ['controlPrevio.create']);
+
+        $tipo_formato_id = $request->tipo_formato_id;
+
+        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::where('tipo_formato_id',$tipo_formato_id)->get('estructura');
+        $estructurasFormatoPago = EstructuraFormatoPago::where('tipo_formato_id',$tipo_formato_id)->get('estructura');
+
+        $data['estructurasDocumentosHabilitantes'] = $estructurasDocumentosHabilitantes;
+        $data['estructurasFormatoPago'] = $estructurasFormatoPago;
+        $data['roles'] = Role::all();
+  
+        return response()->json($data);
     }
 
     public function getExpedientesByFilters(Request $request): JsonResponse

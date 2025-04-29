@@ -6,9 +6,12 @@ namespace App\Http\Controllers\Backend;
     
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EstructuraFormatoPagoRequest;
+use App\Models\Admin;
 use App\Models\EstructuraFormatoPago;
+use App\Models\TipoFormato;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class EstructurasFormatoPagoController extends Controller
@@ -17,8 +20,24 @@ class EstructurasFormatoPagoController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['estructuraFormatoPago.view']);
 
+        $estructurasFormatoPago = EstructuraFormatoPago::all();
+        $tiposFormato = TipoFormato::get(["nombre", "id"]);
+        $responsables = Admin::get(["name", "id"])->pluck('nombre','id');
+
+        $tipos_formato_temp = [];
+        foreach($tiposFormato as $tipoFormato){
+            $tipos_formato_temp[$tipoFormato->id] = $tipoFormato->nombre;
+        }
+
+        foreach($estructurasFormatoPago as $estructuraFormatoPago){
+            $estructuraFormatoPago['nombre_formato_pago'] = array_key_exists($estructuraFormatoPago->tipo_formato_id, $tipos_formato_temp) ? $tipos_formato_temp[$estructuraFormatoPago->tipo_formato_id] : "";
+        }
+
+        $responsable_id = Auth::id();
+
         return view('backend.pages.estructurasFormatoPago.index', [
-            'estructurasFormatoPago' => EstructuraFormatoPago::all(),
+            'estructurasFormatoPago' => $estructurasFormatoPago,
+            'tiposFormato' => $tiposFormato
         ]);
     }
 
@@ -26,7 +45,13 @@ class EstructurasFormatoPagoController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['estructuraFormatoPago.create']);
 
+        $tiposFormato = TipoFormato::get(["nombre", "id"])->pluck('nombre','id');
+        $responsables = Admin::get(["name", "id"])->pluck('nombre','id');
+
+        $responsable_id = Auth::id();
+
         return view('backend.pages.estructurasFormatoPago.create', [
+            'tiposFormato' => $tiposFormato,
             'roles' => Role::all(),
         ]);
     }
@@ -49,14 +74,20 @@ class EstructurasFormatoPagoController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['estructuraFormatoPago.edit']);
 
+        $tiposFormato = TipoFormato::get(["nombre", "id"])->pluck('nombre','id');
+        $responsables = Admin::get(["name", "id"])->pluck('nombre','id');
+
+        $responsable_id = Auth::id();
+
         $estructuraFormatoPago = EstructuraFormatoPago::findOrFail($id);
-        return view('backend.pages.estructursaFormatoPago.edit', [
+        return view('backend.pages.estructurasFormatoPago.edit', [
             'estructuraFormatoPago' => $estructuraFormatoPago,
+            'tiposFormato' => $tiposFormato,
             'roles' => Role::all(),
         ]);
     }
 
-    public function update(estructuraFormatoPago $request, int $id): RedirectResponse
+    public function update(EstructuraFormatoPagoRequest $request, int $id): RedirectResponse
     {
         $this->checkAuthorization(auth()->user(), ['estructuraFormatoPago.edit']);
 

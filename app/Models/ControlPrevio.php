@@ -18,8 +18,8 @@ class ControlPrevio extends Authenticatable
      *
      * @var string
      */
-    protected $table = 'control_previo';
-    protected $guard_name = 'control_previo';
+    protected $table = 'controles_previos';
+    protected $guard_name = 'controles_previos';
   
     protected $fillable = [
         'nro_control_previo_y_concurrente',

@@ -6,9 +6,12 @@ namespace App\Http\Controllers\Backend;
     
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EstructuraDocumentosHabilitantesRequest;
+use App\Models\Admin;
 use App\Models\EstructuraDocumentosHabilitantes;
+use App\Models\TipoFormato;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class EstructurasDocumentosHabilitantesController extends Controller
@@ -17,8 +20,23 @@ class EstructurasDocumentosHabilitantesController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['estructuraDocumentosHabilitantes.view']);
 
+        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::all();
+        $tiposFormato = TipoFormato::get(["nombre", "id"]);
+        $responsables = Admin::get(["name", "id"])->pluck('nombre','id');
+
+        $tipos_formato_temp = [];
+        foreach($tiposFormato as $tipoFormato){
+            $tipos_formato_temp[$tipoFormato->id] = $tipoFormato->nombre;
+        }
+
+        foreach($estructurasDocumentosHabilitantes as $estructuraDocumentosHabilitantes){
+            $estructuraDocumentosHabilitantes['nombre_documentos_habilitantes'] = array_key_exists($estructuraDocumentosHabilitantes->tipo_formato_id, $tipos_formato_temp) ? $tipos_formato_temp[$estructuraDocumentosHabilitantes->tipo_formato_id] : "";
+        }
+
+        $responsable_id = Auth::id();
+
         return view('backend.pages.estructurasDocumentosHabilitantes.index', [
-            'estructurasDocumentosHabilitantes' => EstructuraDocumentosHabilitantes::all(),
+            'estructurasDocumentosHabilitantes' => $estructurasDocumentosHabilitantes,
         ]);
     }
 
@@ -26,7 +44,13 @@ class EstructurasDocumentosHabilitantesController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['estructuraDocumentosHabilitantes.create']);
 
+        $tiposFormato = TipoFormato::get(["nombre", "id"])->pluck('nombre','id');
+        $responsables = Admin::get(["name", "id"])->pluck('nombre','id');
+
+        $responsable_id = Auth::id();
+
         return view('backend.pages.estructurasDocumentosHabilitantes.create', [
+            'tiposFormato' => $tiposFormato,
             'roles' => Role::all(),
         ]);
     }
@@ -49,9 +73,15 @@ class EstructurasDocumentosHabilitantesController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['estructuraDocumentosHabilitantes.edit']);
 
+        $tiposFormato = TipoFormato::get(["nombre", "id"])->pluck('nombre','id');
+        $responsables = Admin::get(["name", "id"])->pluck('nombre','id');
+
+        $responsable_id = Auth::id();
+
         $estructuraDocumentosHabilitantes = EstructuraDocumentosHabilitantes::findOrFail($id);
         return view('backend.pages.estructurasDocumentosHabilitantes.edit', [
             'estructuraDocumentosHabilitantes' => $estructuraDocumentosHabilitantes,
+            'tiposFormato' => $tiposFormato,
             'roles' => Role::all(),
         ]);
     }

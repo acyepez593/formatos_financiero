@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Backend;
     
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EstructuraFormatoPagoRequest;
 use App\Http\Requests\TipoFormatoRequest;
-use App\Models\EstructuraFormatoPago;
 use App\Models\TipoFormato;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
@@ -33,12 +31,13 @@ class TiposFormatoController extends Controller
         ]);
     }
 
-    public function store(EstructuraFormatoPagoRequest $request): RedirectResponse
+    public function store(TipoFormatoRequest $request): RedirectResponse
     {
         $this->checkAuthorization(auth()->user(), ['tipoFormato.create']);
 
         $tipoFormato = new TipoFormato();
         $tipoFormato->nombre = $request->nombre;
+        $tipoFormato->descripcion = $request->descripcion;
         $tipoFormato->save();
 
         session()->flash('success', __('Tipo Formato ha sido creado satisfactoriamente.'));
@@ -62,6 +61,7 @@ class TiposFormatoController extends Controller
 
         $tipoFormato = TipoFormato::findOrFail($id);
         $tipoFormato->nombre = $request->nombre;
+        $tipoFormato->descripcion = $request->descripcion;
         $tipoFormato->save();
 
         session()->flash('success', 'Tipo Formato ha sido actualizado satisfactoriamente.');

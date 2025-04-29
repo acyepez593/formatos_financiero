@@ -76,14 +76,14 @@ Dashboard Page - Admin Panel
                 </div>
             </div>
             @endif
-            @if ($usr->can('expediente.create') || $usr->can('expediente.view') ||  $usr->can('expediente.edit') ||  $usr->can('expediente.delete'))
+            @if ($usr->can('controlPrevio.create') || $usr->can('controlPrevio.view') ||  $usr->can('controlPrevio.edit') ||  $usr->can('controlPrevio.delete'))
             <div class="col-md-6 mt-md-3 mb-3">
                 <div class="card">
                     <div class="seo-fact sbg1">
-                        <a href="{{ route('admin.expedientes.index') }}">
+                        <a href="{{ route('admin.controlesPrevios.index') }}">
                             <div class="p-4 d-flex justify-content-between align-items-center">
-                                <div class="seofct-icon"><i class="fa fa-file-text"></i> Expedientes</div>
-                                <h2>{{ $total_expedientes }}</h2>
+                                <div class="seofct-icon"><i class="fa fa-file-text"></i> Controles Previos</div>
+                                <h2>{{ $total_controles_previos }}</h2>
                             </div>
                         </a>
                     </div>

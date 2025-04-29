@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estructura_documentos_habilitantes', function (Blueprint $table) {
+        Schema::create('estructuras_documentos_habilitantes', function (Blueprint $table) {
             $table->id();
             $table->string('descripcion');
             $table->unsignedBigInteger('tipo_formato_id');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estructura_documentos_habilitantes');
+        Schema::dropIfExists('estructuras_documentos_habilitantes');
     }
 };

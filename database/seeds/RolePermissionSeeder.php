@@ -77,35 +77,57 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
-                'group_name' => 'catalogo',
+                'group_name' => 'configuracion',
                 'permissions' => [
-                    // catalogo Permissions
-                    'catalogo.create',
-                    'catalogo.view',
-                    'catalogo.edit',
-                    'catalogo.delete',
+                    // configuracion Permissions
+                    'configuracion.create',
+                    'configuracion.view',
+                    'configuracion.edit',
+                    'configuracion.delete',
                     
                 ]
             ],
             [
-                'group_name' => 'proteccion',
+                'group_name' => 'tipoFormato',
                 'permissions' => [
-                    // proteccion Permissions
-                    'proteccion.create',
-                    'proteccion.view',
-                    'proteccion.edit',
-                    'proteccion.delete',
+                    // tipoFormato Permissions
+                    'tipoFormato.create',
+                    'tipoFormato.view',
+                    'tipoFormato.edit',
+                    'tipoFormato.delete',
                     
                 ]
             ],
             [
-                'group_name' => 'control_previo',
+                'group_name' => 'estructuraDocumentosHabilitantes',
+                'permissions' => [
+                    // estructuraDocumentosHabilitantes Permissions
+                    'estructuraDocumentosHabilitantes.create',
+                    'estructuraDocumentosHabilitantes.view',
+                    'estructuraDocumentosHabilitantes.edit',
+                    'estructuraDocumentosHabilitantes.delete',
+                    
+                ]
+            ],
+            [
+                'group_name' => 'estructuraFormatoPago',
+                'permissions' => [
+                    // estructuraFormatoPago Permissions
+                    'estructuraFormatoPago.create',
+                    'estructuraFormatoPago.view',
+                    'estructuraFormatoPago.edit',
+                    'estructuraFormatoPago.delete',
+                    
+                ]
+            ],
+            [
+                'group_name' => 'controlPrevio',
                 'permissions' => [
                     // control_previo Permissions
-                    'control_previo.create',
-                    'control_previo.view',
-                    'control_previo.edit',
-                    'control_previo.delete',
+                    'controlPrevio.create',
+                    'controlPrevio.view',
+                    'controlPrevio.edit',
+                    'controlPrevio.delete',
                     
                 ]
             ],

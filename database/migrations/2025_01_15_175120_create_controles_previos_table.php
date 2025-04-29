@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('control_previo', function (Blueprint $table) {
+        Schema::create('controles_previos', function (Blueprint $table) {
             $table->id();
             $table->string('nro_control_previo_y_concurrente');
             $table->index('nro_control_previo_y_concurrente');
@@ -40,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('control_previo');
+        Schema::dropIfExists('controles_previos');
     }
 };

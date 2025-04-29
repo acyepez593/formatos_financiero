@@ -25,7 +25,7 @@ class TipoFormatoRequest extends FormRequest
     {
         return [
             'nombre' => 'required|max:100',
-            'control_previo_id' => 'required'
+            'descripcion' => 'required|max:1000'
         ];
     }
 }

@@ -55,6 +55,7 @@
                                 <tr>
                                     <th>{{ __('#') }}</th>
                                     <th>{{ __('Nombre') }}</th>
+                                    <th>{{ __('Descripción') }}</th>
                                     <th>{{ __('Acción') }}</th>
                                 </tr>
                             </thead>
@@ -63,6 +64,7 @@
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
                                     <td>{{ $tipoFormato->nombre }}</td>
+                                    <td>{{ $tipoFormato->descripcion }}</td>
                                     <td>
                                         @if (auth()->user()->can('tipoFormato.edit'))
                                             <a class="btn btn-success text-white" href="{{ route('admin.tiposFormato.edit', $tipoFormato->id) }}">Editar</a>

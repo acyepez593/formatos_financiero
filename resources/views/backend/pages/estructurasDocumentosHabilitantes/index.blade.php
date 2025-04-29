@@ -65,7 +65,7 @@
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
                                     <td>{{ $estructuraDocumentosHabilitantes->descripcion }}</td>
-                                    <td>{{ $estructuraDocumentosHabilitantes->tipoFormatoNombre }}</td>
+                                    <td>{{ $estructuraDocumentosHabilitantes->nombre_documentos_habilitantes }}</td>
                                     <td>{{ $estructuraDocumentosHabilitantes->estructura }}</td>
                                     <td>
                                         @if (auth()->user()->can('estructuraDocumentosHabilitantes.edit'))

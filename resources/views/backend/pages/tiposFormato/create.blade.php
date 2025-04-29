@@ -54,6 +54,10 @@ Crear Tipo Formato - Admin Panel
                                 <label for="nombre">Nombre</label>
                                 <input type="text" onkeyup="this.value = this.value.toUpperCase();" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required autofocus value="{{ old('nombre') }}">
                             </div>
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="descripcion">Descripcción</label>
+                                <input type="text" onkeyup="this.value = this.value.toUpperCase();" class="form-control" id="descripcion" name="descripcion" placeholder="Descripción" required autofocus value="{{ old('descripcion') }}">
+                            </div>
                         </div>
                         
                         <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Guardar</button>

@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipos_formato', function (Blueprint $table) {
+        Schema::create('documentos_habilitantes', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->unsignedBigInteger('control_previo_id');
+            $table->index('control_previo_id');
+            $table->unsignedBigInteger('esctructura_docu_habi_id');
+            $table->index('esctructura_docu_habi_id');
+            $table->json("datos")->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipos_formato');
+        Schema::dropIfExists('documentos_habilitantes');
     }
 };

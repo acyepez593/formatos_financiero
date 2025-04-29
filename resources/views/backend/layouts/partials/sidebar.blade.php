@@ -59,61 +59,61 @@
                     </li>
                     @endif
 
-                    @if ($usr->can('catalogo.view'))
+                    @if ($usr->can('configuracion.view'))
                     <li>
                         <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
-                            Catálogos
+                            Configuraciones
                         </span></a>
-                        <ul class="collapse {{ Route::is('admin.catalogos.create') || Route::is('admin.catalogos.index') || Route::is('admin.catalogos.edit') || Route::is('admin.catalogos.show') ? 'in' : '' }}">
-                            @if ($usr->can('proteccion.create') || $usr->can('proteccion.view') ||  $usr->can('proteccion.edit') ||  $usr->can('proteccion.delete'))
+                        <ul class="collapse {{ Route::is('admin.configuraciones.create') || Route::is('admin.configuraciones.index') || Route::is('admin.configuraciones.edit') || Route::is('admin.configuraciones.show') ? 'in' : '' }}">
+                             @if ($usr->can('tipoFormato.create') || $usr->can('tipoFormato.view') ||  $usr->can('tipoFormato.edit') ||  $usr->can('tipoFormato.delete'))
                             <li>
                                 <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
-                                    Protecciones
+                                    Tipos Formato
                                 </span></a>
-                                <ul class="collapse {{ Route::is('admin.protecciones.create') || Route::is('admin.protecciones.index') || Route::is('admin.protecciones.edit') || Route::is('admin.protecciones.show') ? 'in' : '' }}">
+                                <ul class="collapse {{ Route::is('admin.tiposFormato.create') || Route::is('admin.tiposFormato.index') || Route::is('admin.tiposFormato.edit') || Route::is('admin.tiposFormato.show') ? 'in' : '' }}">
                                     
-                                    @if ($usr->can('proteccion.view'))
-                                        <li class="{{ Route::is('admin.protecciones.index')  || Route::is('admin.protecciones.edit') ? 'active' : '' }}"><a href="{{ route('admin.protecciones.index') }}">Todos las Protecciones</a></li>
+                                    @if ($usr->can('tipoFormato.view'))
+                                        <li class="{{ Route::is('admin.tiposFormato.index')  || Route::is('admin.tiposFormato.edit') ? 'active' : '' }}"><a href="{{ route('admin.tiposFormato.index') }}">Todos los Tipos Formato</a></li>
                                     @endif
 
-                                    @if ($usr->can('proteccion.create'))
-                                        <li class="{{ Route::is('admin.protecciones.create')  ? 'active' : '' }}"><a href="{{ route('admin.protecciones.create') }}">Crear Protección</a></li>
+                                    @if ($usr->can('tipoFormato.create'))
+                                        <li class="{{ Route::is('admin.tiposFormato.create')  ? 'active' : '' }}"><a href="{{ route('admin.tiposFormato.create') }}">Crear Tipo Respuesta</a></li>
                                     @endif
                                 </ul>
                             </li>
                             @endif
 
-                            @if ($usr->can('estado.create') || $usr->can('estado.create') || $usr->can('estado.view') ||  $usr->can('estado.edit') ||  $usr->can('estado.delete'))
+                            @if ($usr->can('estructuraFormatoPago.create') || $usr->can('estructuraFormatoPago.create') || $usr->can('estructuraFormatoPago.view') ||  $usr->can('estructuraFormatoPago.edit') ||  $usr->can('estructuraFormatoPago.delete'))
                             <li>
                                 <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
-                                    Estados
+                                    Estructura Formato Pago
                                 </span></a>
-                                <ul class="collapse {{ Route::is('admin.estados.create') || Route::is('admin.estados.index') || Route::is('admin.estados.edit') || Route::is('admin.estados.show') ? 'in' : '' }}">
+                                <ul class="collapse {{ Route::is('admin.estructurasFormatoPago.create') || Route::is('admin.estructurasFormatoPago.index') || Route::is('admin.estructurasFormatoPago.edit') || Route::is('admin.estructurasFormatoPago.show') ? 'in' : '' }}">
                                     
-                                    @if ($usr->can('estado.view'))
-                                        <li class="{{ Route::is('admin.estados.index')  || Route::is('admin.estados.edit') ? 'active' : '' }}"><a href="{{ route('admin.estados.index') }}">Todos los Estados</a></li>
+                                    @if ($usr->can('estructuraFormatoPago.view'))
+                                        <li class="{{ Route::is('admin.estructurasFormatoPago.index')  || Route::is('admin.estructurasFormatoPago.edit') ? 'active' : '' }}"><a href="{{ route('admin.estructurasFormatoPago.index') }}">Todos las Estructuras Formato Pago</a></li>
                                     @endif
 
-                                    @if ($usr->can('estado.create'))
-                                        <li class="{{ Route::is('admin.estados.create')  ? 'active' : '' }}"><a href="{{ route('admin.estados.create') }}">Crear Estados</a></li>
+                                    @if ($usr->can('estructuraFormatoPago.create'))
+                                        <li class="{{ Route::is('admin.estructurasFormatoPago.create')  ? 'active' : '' }}"><a href="{{ route('admin.estructurasFormatoPago.create') }}">Crear Estructura Formato Pago</a></li>
                                     @endif
                                 </ul>
                             </li>
                             @endif
 
-                            @if ($usr->can('tipoRespuesta.create') || $usr->can('tipoRespuesta.view') ||  $usr->can('tipoRespuesta.edit') ||  $usr->can('tipoRespuesta.delete'))
+                            @if ($usr->can('estructuraDocumentosHabilitantes.create') || $usr->can('estructuraDocumentosHabilitantes.view') ||  $usr->can('estructuraDocumentosHabilitantes.edit') ||  $usr->can('estructuraDocumentosHabilitantes.delete'))
                             <li>
                                 <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
-                                    Tipos Respuesta
+                                    Estructura Documentos Habilitantes
                                 </span></a>
-                                <ul class="collapse {{ Route::is('admin.tiposRespuesta.create') || Route::is('admin.tiposRespuesta.index') || Route::is('admin.tiposRespuesta.edit') || Route::is('admin.tiposRespuesta.show') ? 'in' : '' }}">
+                                <ul class="collapse {{ Route::is('admin.estructurasDocumentosHabilitantes.create') || Route::is('admin.estructurasDocumentosHabilitantes.index') || Route::is('admin.estructurasDocumentosHabilitantes.edit') || Route::is('admin.estructurasDocumentosHabilitantes.show') ? 'in' : '' }}">
                                     
-                                    @if ($usr->can('tipoRespuesta.view'))
-                                        <li class="{{ Route::is('admin.tiposRespuesta.index')  || Route::is('admin.tiposRespuesta.edit') ? 'active' : '' }}"><a href="{{ route('admin.tiposRespuesta.index') }}">Todos los Tipos Repuesta</a></li>
+                                    @if ($usr->can('estructuraDocumentosHabilitantes.view'))
+                                        <li class="{{ Route::is('admin.estructurasDocumentosHabilitantes.index')  || Route::is('admin.estructurasDocumentosHabilitantes.edit') ? 'active' : '' }}"><a href="{{ route('admin.estructurasDocumentosHabilitantes.index') }}">Todos las Estructuras Documentos Habilitantes</a></li>
                                     @endif
 
-                                    @if ($usr->can('tipoRespuesta.create'))
-                                        <li class="{{ Route::is('admin.tiposRespuesta.create')  ? 'active' : '' }}"><a href="{{ route('admin.tiposRespuesta.create') }}">Crear Tipo Respuesta</a></li>
+                                    @if ($usr->can('estructuraDocumentosHabilitantes.create'))
+                                        <li class="{{ Route::is('admin.estructurasDocumentosHabilitantes.create')  ? 'active' : '' }}"><a href="{{ route('admin.estructurasDocumentosHabilitantes.create') }}">Crear Estructura Documentos Habilitantes</a></li>
                                     @endif
                                 </ul>
                             </li>
@@ -123,37 +123,19 @@
                     </li>
                     @endif
 
-                    @if ($usr->can('semaforo.create') || $usr->can('semaforo.view') ||  $usr->can('semaforo.edit') ||  $usr->can('semaforo.delete'))
+                    @if ($usr->can('controlPrevio.create') || $usr->can('controlPrevio.view') ||  $usr->can('controlPrevio.edit') ||  $usr->can('controlPrevio.delete'))
                     <li>
                         <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
-                            Cofiguración Semaforo
+                            Control Previo
                         </span></a>
-                        <ul class="collapse {{ Route::is('admin.semaforos.create') || Route::is('admin.semaforos.index') || Route::is('admin.semaforos.edit') || Route::is('admin.semaforos.show') ? 'in' : '' }}">
+                        <ul class="collapse {{ Route::is('admin.controlesPrevios.create') || Route::is('admin.controlesPrevios.index') || Route::is('admin.controlesPrevios.edit') || Route::is('admin.controlesPrevios.show') ? 'in' : '' }}">
                             
-                            @if ($usr->can('semaforo.view'))
-                                <li class="{{ Route::is('admin.semaforos.index')  || Route::is('admin.semaforos.edit') ? 'active' : '' }}"><a href="{{ route('admin.semaforos.index') }}">Todas las Semaforos</a></li>
+                            @if ($usr->can('controlPrevio.view'))
+                                <li class="{{ Route::is('admin.controlesPrevios.index')  || Route::is('admin.controlesPrevios.edit') ? 'active' : '' }}"><a href="{{ route('admin.controlesPrevios.index') }}">Todas los Controles Previos</a></li>
                             @endif
 
-                            @if ($usr->can('semaforo.create'))
-                                <li class="{{ Route::is('admin.semaforos.create')  ? 'active' : '' }}"><a href="{{ route('admin.semaforos.create') }}">Crear Semaforo</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                    @endif
-
-                    @if ($usr->can('expediente.create') || $usr->can('expediente.view') ||  $usr->can('expediente.edit') ||  $usr->can('expediente.delete'))
-                    <li>
-                        <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-file-text"></i><span>
-                            Expedientes
-                        </span></a>
-                        <ul class="collapse {{ Route::is('admin.expedientes.create') || Route::is('admin.expedientes.index') || Route::is('admin.expedientes.edit') || Route::is('admin.expedientes.show') ? 'in' : '' }}">
-                            
-                            @if ($usr->can('expediente.view'))
-                                <li class="{{ Route::is('admin.expedientes.index')  || Route::is('admin.expedientes.edit') ? 'active' : '' }}"><a href="{{ route('admin.expedientes.index') }}">Todos los Expedientes</a></li>
-                            @endif
-
-                            @if ($usr->can('expediente.create'))
-                                <li class="{{ Route::is('admin.expedientes.create')  ? 'active' : '' }}"><a href="{{ route('admin.expedientes.create') }}">Crear Registro</a></li>
+                            @if ($usr->can('controlPrevio.create'))
+                                <li class="{{ Route::is('admin.controlesPrevios.create')  ? 'active' : '' }}"><a href="{{ route('admin.controlesPrevios.create') }}">Crear Control Previo</a></li>
                             @endif
                         </ul>
                     </li>

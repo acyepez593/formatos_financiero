@@ -65,7 +65,7 @@
                                <tr>
                                     <td>{{ $loop->index+1 }}</td>
                                     <td>{{ $estructuraFormatoPago->descripcion }}</td>
-                                    <td>{{ $estructuraFormatoPago->tipoFormatoNombre }}</td>
+                                    <td>{{ $estructuraFormatoPago->nombre_formato_pago }}</td>
                                     <td>{{ $estructuraFormatoPago->estructura }}</td>
                                     <td>
                                         @if (auth()->user()->can('estructuraFormatoPago.edit'))

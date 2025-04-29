@@ -23,7 +23,7 @@ class TipoFormato extends Authenticatable
   
     protected $fillable = [
         'nombre',
-        'control_previo_id'
+        'descripcion'
     ];
 
     protected $dates = ['deleted_at'];

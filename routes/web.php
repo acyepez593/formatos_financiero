@@ -5,14 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\AdminsController;
 use App\Http\Controllers\Backend\Auth\ForgotPasswordController;
 use App\Http\Controllers\Backend\Auth\LoginController;
+use App\Http\Controllers\Backend\ControlesPreviosController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\EstadosController;
+use App\Http\Controllers\Backend\EstructurasDocumentosHabilitantesController;
+use App\Http\Controllers\Backend\EstructurasFormatoPagoController;
 use App\Http\Controllers\Backend\RolesController;
 use App\Http\Controllers\Backend\ExpedientesController;
 use App\Http\Controllers\Backend\ProteccionesController;
 use App\Http\Controllers\Backend\TiposRespuestaController;
 use App\Http\Controllers\Backend\SemaforosController;
 use App\Http\Controllers\Backend\ReportesController;
+use App\Http\Controllers\Backend\TiposFormatoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +40,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/getReporteByNumeroCaja','backend\ReportesController@getReporteByNumeroCaja')->middleware('auth:admin');
 
 
-Route::post('/getExpedientesByFilters','backend\ExpedientesController@getExpedientesByFilters')->middleware('auth:admin');
+Route::post('/getControlesPreviosByFilters','backend\ControlesPreviosController@getControlesPreviosByFilters')->middleware('auth:admin');
+Route::post('/getFormatoByTipoFormato','backend\ControlesPreviosController@getFormatoByTipoFormato')->middleware('auth:admin');
 
 /**
  * Admin routes
@@ -45,13 +50,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('roles', RolesController::class);
     Route::resource('admins', AdminsController::class);
-    // Catalogos
-    Route::resource('protecciones', ProteccionesController::class);
-    Route::resource('estados', EstadosController::class);
-    Route::resource('tiposRespuesta', TiposRespuestaController::class);
-    Route::resource('semaforos', SemaforosController::class);
-
-    Route::resource('expedientes', ExpedientesController::class);
+    // Configuraciones
+    Route::resource('tiposFormato', TiposFormatoController::class);
+    Route::resource('estructurasFormatoPago', EstructurasFormatoPagoController::class);
+    Route::resource('estructurasDocumentosHabilitantes', EstructurasDocumentosHabilitantesController::class);
+    
+    Route::resource('controlesPrevios', ControlesPreviosController::class);
     Route::resource('reportes', ReportesController::class);
 
     // Login Routes.

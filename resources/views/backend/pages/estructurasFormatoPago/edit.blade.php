@@ -59,7 +59,6 @@ Editar Estructura Formato Pago - Panel Estructura Formato Pago
                                 <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true" required>
                                     <option value="">Seleccione un Tipo Formato</option>
                                     @foreach ($tiposFormato as $key => $value)
-                                        <option value="{{ $key }}">{{ $value }}</option>
                                         <option value="{{ $key }}" {{ old('tipo_formato_id', $estructuraFormatoPago->tipo_formato_id) == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
                                 </select>

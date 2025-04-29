@@ -54,6 +54,10 @@ Editar Tipo Formato - Panel Tipo Formato
                                 <label for="nombre">Nombre</label>
                                 <input type="text" onkeyup="this.value = this.value.toUpperCase();" class="form-control" id="nombre" name="nombre" placeholder="Nombre" value="{{ $tipoFormato->nombre }}" required autofocus>
                             </div>
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="descripcion">Descripción</label>
+                                <input type="text" onkeyup="this.value = this.value.toUpperCase();" class="form-control" id="descripcion" name="descripcion" placeholder="Descripción" value="{{ $tipoFormato->descripcion }}" required>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Guardar</button>
                         <a href="{{ route('admin.tiposFormato.index') }}" class="btn btn-secondary mt-4 pr-4 pl-4">Cancelar</a>
