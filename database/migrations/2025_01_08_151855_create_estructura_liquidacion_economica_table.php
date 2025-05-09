@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formatos_pago', function (Blueprint $table) {
+        Schema::create('estructuras_liquidacion_economica', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('control_previo_id');
-            $table->index('control_previo_id');
-            $table->unsignedBigInteger('estructura_formato_pago_id');
-            $table->index('estructura_formato_pago_id');
-            $table->json("datos")->nullable();
+            $table->string('descripcion');
+            $table->unsignedBigInteger('tipo_formato_id');
+            $table->index('tipo_formato_id');
+            $table->json("estructura")->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formatos_pago');
+        Schema::dropIfExists('estructuras_liquidacion_economica');
     }
 };

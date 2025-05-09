@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formatos_pago', function (Blueprint $table) {
+        Schema::create('liquidaciones_economicas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('control_previo_id');
             $table->index('control_previo_id');
-            $table->unsignedBigInteger('estructura_formato_pago_id');
-            $table->index('estructura_formato_pago_id');
+            $table->unsignedBigInteger('esctructura_liq_eco_id');
+            $table->index('esctructura_liq_eco_id');
             $table->json("datos")->nullable();
             $table->softDeletes();
             $table->timestamps();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formatos_pago');
+        Schema::dropIfExists('liquidaciones_economicas');
     }
 };

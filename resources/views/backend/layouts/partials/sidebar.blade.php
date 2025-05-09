@@ -119,6 +119,42 @@
                             </li>
                             @endif
 
+                            @if ($usr->can('estructuraResumenRemesa.create') || $usr->can('estructuraResumenRemesa.create') || $usr->can('estructuraResumenRemesa.view') ||  $usr->can('estructuraResumenRemesa.edit') ||  $usr->can('estructuraResumenRemesa.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
+                                    Estructura Resumen Remesa
+                                </span></a>
+                                <ul class="collapse {{ Route::is('admin.estructurasResumenRemesa.create') || Route::is('admin.estructurasResumenRemesa.index') || Route::is('admin.estructurasResumenRemesa.edit') || Route::is('admin.estructurasResumenRemesa.show') ? 'in' : '' }}">
+                                    
+                                    @if ($usr->can('estructuraResumenRemesa.view'))
+                                        <li class="{{ Route::is('admin.estructurasResumenRemesa.index')  || Route::is('admin.estructurasResumenRemesa.edit') ? 'active' : '' }}"><a href="{{ route('admin.estructurasResumenRemesa.index') }}">Todos las Estructuras Resumen Remesa</a></li>
+                                    @endif
+
+                                    @if ($usr->can('estructuraResumenRemesa.create'))
+                                        <li class="{{ Route::is('admin.estructurasResumenRemesa.create')  ? 'active' : '' }}"><a href="{{ route('admin.estructurasResumenRemesa.create') }}">Crear Estructura Resumen Remesa</a></li>
+                                    @endif
+                                </ul>
+                            </li>
+                            @endif
+
+                            @if ($usr->can('estructuraLiquidacionEconomica.create') || $usr->can('estructuraLiquidacionEconomica.create') || $usr->can('estructuraLiquidacionEconomica.view') ||  $usr->can('estructuraLiquidacionEconomica.edit') ||  $usr->can('estructuraLiquidacionEconomica.delete'))
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-list"></i><span>
+                                    Estructura Liquidación Económica
+                                </span></a>
+                                <ul class="collapse {{ Route::is('admin.estructurasLiquidacionEconomica.create') || Route::is('admin.estructurasLiquidacionEconomica.index') || Route::is('admin.estructurasLiquidacionEconomica.edit') || Route::is('admin.estructurasLiquidacionEconomica.show') ? 'in' : '' }}">
+                                    
+                                    @if ($usr->can('estructuraLiquidacionEconomica.view'))
+                                        <li class="{{ Route::is('admin.estructurasLiquidacionEconomica.index')  || Route::is('admin.estructurasLiquidacionEconomica.edit') ? 'active' : '' }}"><a href="{{ route('admin.estructurasLiquidacionEconomica.index') }}">Todos las Estructuras Liquidación Económica</a></li>
+                                    @endif
+
+                                    @if ($usr->can('estructuraLiquidacionEconomica.create'))
+                                        <li class="{{ Route::is('admin.estructurasLiquidacionEconomica.create')  ? 'active' : '' }}"><a href="{{ route('admin.estructurasLiquidacionEconomica.create') }}">Crear Estructura Liquidación Económica</a></li>
+                                    @endif
+                                </ul>
+                            </li>
+                            @endif
+
                         </ul>
                     </li>
                     @endif

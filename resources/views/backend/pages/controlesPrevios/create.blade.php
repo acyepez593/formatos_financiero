@@ -12,6 +12,9 @@ Crear Control Previo - Admin Panel
     .form-check-label {
         text-transform: capitalize;
     }
+    .card-header{
+        font-size: larger;
+    }
 </style>
 @endsection
 
@@ -137,6 +140,15 @@ Crear Control Previo - Admin Panel
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
+                                <label for="servidor_publico">Servidor Público</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control @error('servidor_publico') is-invalid @enderror" id="servidor_publico" name="servidor_publico" placeholder="" value="{{ old('servidor_publico') }}" maxlength="1000" required>
+                                    @error('servidor_publico')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 col-sm-12">
                                 <label for="tipo_formato_id">Seleccione un Formato:</label>
                                 <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true">
                                     @foreach ($tiposFormato as $key => $value)
@@ -148,14 +160,14 @@ Crear Control Previo - Admin Panel
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-row">
+                        <div class="form-group col-md-12 col-sm-12">
                             <div class="card bg-light col-md-12">
                                 <div class="card-header">Forma de Pago</div>
                                 <div class="card-body">
-                                <button type="button" style="margin-left:10px; magin-right:10px;" id="addRow" onclick="addRowFormaPago()" class="btn btn-primary">Agregar</button>
+                                    <button type="button" style="margin-left:10px; magin-right:10px;" id="addRow" onclick="addRowFormaPago()" class="btn btn-primary">Agregar</button>
                                     <div class="form-row">
                                         
-                                        <table id="dataTable" class="text-center" style="width: 100%;">
+                                        <table id="dataTableFormaPago" class="text-center" style="width: 100%;">
                                             <thead class="bg-light text-capitalize">
                                                 
                                             </thead>
@@ -178,12 +190,38 @@ Crear Control Previo - Admin Panel
                                 </div>
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="card bg-light col-md-12">
+                        <div class="form-group col-md-12 col-sm-12">
+                            <div class="card bg-light col-md-12" style="margin-top: 15px;">
                                 <div class="card-header">Documentos Habilitantes</div>
                                 <div class="card-body">
                                     <div class="form-row">
-                                        <table id="dataTable" class="text-center" style="width: 100%;">
+                                        <table id="dataTableDocumentosHabilitantes" class="text-center" style="width: 100%;">
+                                            <thead class="bg-light text-capitalize">
+                                                
+                                            </thead>
+                                            <tbody>
+                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12">
+                            <div class="card bg-light col-md-12" style="margin-top: 15px;">
+                                <div class="card-header">Resumen de Remesa</div>
+                                <div class="card-body">
+                                    <div id="dataResumenRemesa" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12">
+                            <div class="card bg-light col-md-12" style="margin-top: 15px;">
+                                <div class="card-header">Liquidación Económica</div>
+                                <div class="card-body">
+                                    <button type="button" style="margin-left:10px; magin-right:10px;" id="addRowLiquidacionEconomica" onclick="addRowLiquidacionEconomica()" class="btn btn-primary">Agregar</button>
+                                    <div class="form-row">
+                                        <table id="dataTableLiquidacionEconomica" class="text-center" style="width: 100%;">
                                             <thead class="bg-light text-capitalize">
                                                 
                                             </thead>
@@ -196,7 +234,11 @@ Crear Control Previo - Admin Panel
                             </div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Guardar</button>
+                        <input type="hidden" id="forma_pago" name="forma_pago" value="">
+                        <input type="hidden" id="documentos_habilitantes" name="documentos_habilitantes" value="">
+                        <input type="hidden" id="resumen_remesa" name="resumen_remesa" value="">
+                        <input type="hidden" id="liquidacion_economica" name="liquidacion_economica" value="">
+                        <button type="submit" onclick="buildObject()" class="btn btn-primary mt-4 pr-4 pl-4">Guardar</button>
                         <a href="{{ route('admin.controlesPrevios.index') }}" class="btn btn-secondary mt-4 pr-4 pl-4">Cancelar</a>
                     </form>
                 </div>
@@ -218,12 +260,16 @@ Crear Control Previo - Admin Panel
 <script>
     let table = "";
     let tableRef = "";
+    let tableRefDocH = "";
     let tableFotter = "";
     let tableHeaderRef = "";
+    let tableHeaderRefLiqEco = "";
     let primerReg = false;
     let estructurasFormatoPago = [];
     let estructurasDocumentosHabilitantes = [];
     let contador = 0;
+    let contadorDocH = 0;
+    let contadorColumnas = 0;
 
     $(document).ready(function() {
         $('.select2').select2();
@@ -250,14 +296,19 @@ Crear Control Previo - Admin Panel
 
         $( "#tipo_formato_id" ).on( "change", function() {
             $("#overlay").fadeIn(300);
-            $('#dataTable').empty();
+            $('#dataTableFormaPago').empty();
 
-            var tabla = $('#dataTable');
+            var tabla = $('#dataTableFormaPago');
             var thead = $('<thead></thead>').appendTo(tabla);
             var tbody = $('<tbody><tbody/>').appendTo(tabla);
             table = "";
 
             loadDataTable();
+        });
+
+        //Restringir solo numeros enteros
+        $(document).on("input", ".int-number", function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
 
         //Restringir solo numeros decimales
@@ -284,18 +335,49 @@ Crear Control Previo - Admin Panel
                     let header = "";
                     let innerHTML = "";
                     let htmlDelete = "";
+                    let headerLiqEco = "";
+                    let innerHTMLLiqEco = "";
 
                     estructurasFormatoPago = JSON.parse(response.estructurasFormatoPago[0].estructura);
                     estructurasDocumentosHabilitantes = JSON.parse(response.estructurasDocumentosHabilitantes[0].estructura);
-                    console.log(estructurasFormatoPago);
-                    tableHeaderRef = document.getElementById('dataTable').getElementsByTagName('thead')[0];
+                    estructurasResumenRemesa = JSON.parse(response.estructurasResumenRemesa[0].estructura);
+                    estructurasLiquidacionEconomica = JSON.parse(response.estructurasLiquidacionEconomica[0].estructura);
+                    tableHeaderRef = document.getElementById('dataTableFormaPago').getElementsByTagName('thead')[0];
                     
+                    //Formato Pago
                     for (let estructuraFormatoPago of estructurasFormatoPago) {
                         header += "<th>" + estructuraFormatoPago.texto + "</th>";
                     }
                     header += "<th>Acciones</th>";
                     tableHeaderRef.insertRow().innerHTML = header;
-                    tableRef = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+                    tableRef = document.getElementById('dataTableFormaPago').getElementsByTagName('tbody')[0];
+
+                    //Documentos Habilitantes
+                    addRowDocumentosHabilitantes(estructurasDocumentosHabilitantes);
+
+                    //Resumen Remesa
+                    addFieldsResumenRemesa(estructurasResumenRemesa);
+
+                    //Liquidación Económica
+                    if(estructurasLiquidacionEconomica.direccion_header == "horizontal"){
+                        for (let estructuraLiquidacionEconomica of estructurasLiquidacionEconomica.estructura) {
+                            headerLiqEco += "<th>" + estructuraLiquidacionEconomica.texto + "</th>";
+                        }
+                        headerLiqEco += "<th>Acciones</th>";
+                        tableHeaderRefLiqEco.insertRow().innerHTML = headerLiqEco;
+                        tableRefLiqEco = document.getElementById('dataTableLiquidacionEconomica').getElementsByTagName('tbody')[0];
+                    }else if(estructurasLiquidacionEconomica.direccion_header == "vertical"){
+                        tableRefLiqEco = document.getElementById('dataTableLiquidacionEconomica').getElementsByTagName('tbody')[0];
+                        $('#addRowLiquidacionEconomica').hide();
+                        for (let estructuraLiquidacionEconomica of estructurasLiquidacionEconomica.estructura) {
+                            innerHTMLLiqEco += "<th>" + estructuraLiquidacionEconomica.texto + "</th>";
+                            for(let i = 0; i < estructurasLiquidacionEconomica.numero_columnas; i++){
+                                innerHTMLLiqEco += addColLiquidacionEconomica(estructuraLiquidacionEconomica);
+                            }
+                            tableRefLiqEco.insertRow().innerHTML = innerHTMLLiqEco;
+                            innerHTMLLiqEco = "";
+                        }
+                    }
                     
                 }
             });
@@ -334,7 +416,7 @@ Crear Control Previo - Admin Panel
 
     function deleteRowFormaPago(r){
         var i = r.parentNode.parentNode.rowIndex;
-        document.getElementById("dataTable").deleteRow(i);
+        document.getElementById("dataTableFormaPago").deleteRow(i);
         calcularTotales();
     }
 
@@ -362,7 +444,7 @@ Crear Control Previo - Admin Panel
             header.push(estructuraFormatoPago.campo_id);
         }
 
-        $('#dataTable tr').each(function(){
+        $('#dataTableFormaPago tr').each(function(){
             let column = 0;
             if(row != 0){
                 $(this).find('td').each(function(){
@@ -388,32 +470,241 @@ Crear Control Previo - Admin Panel
         $('#valor').val(total);
     }
 
-    function buildObject(){
+    function addRowDocumentosHabilitantes(estructurasDocumentosHabilitantes){
         
-        let row = 0;
-        let header = [];
-        let jsonArrObj = [];
+        tableRefDocH = document.getElementById('dataTableDocumentosHabilitantes').getElementsByTagName('tbody')[0];
 
-        for (let estructuraFormatoPago of estructurasFormatoPago) {
-            header.push(estructuraFormatoPago.campo_id);
+        for (let documento of estructurasDocumentosHabilitantes.documentos) {
+            let innerHTML = "";
+            innerHTML += '<td>' + documento + '</td>';
+            for (let estructuraDocumentosHabilitantes of estructurasDocumentosHabilitantes.estructura) {
+                if(estructuraDocumentosHabilitantes.campo_id != "documento" ){
+                    let id = estructuraDocumentosHabilitantes.campo_id + "_"+contadorDocH;
+                    switch(estructuraDocumentosHabilitantes.type) {
+                    case "text":
+                        innerHTML += '<td><input type="text" class="form-control ' + estructuraDocumentosHabilitantes.class + '" id="' + id  + '" name="' + id + '" placeholder="" value="" onchange="' + estructuraDocumentosHabilitantes.onchange + '" maxlength="300" ' + estructuraDocumentosHabilitantes.required + ' ' + estructuraDocumentosHabilitantes.readonly + '></td>';
+                        break;
+                    case "number":
+                        innerHTML += '<td><input type="number" class="form-control ' + estructuraDocumentosHabilitantes.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" onchange="' + estructuraDocumentosHabilitantes.onchange + '" maxlength="300" ' + estructuraDocumentosHabilitantes.required + ' ' + estructuraDocumentosHabilitantes.readonly + '></td>';
+                        break;
+                    case "date":
+                        innerHTML += '<td><input type="date" class="form-control ' + estructuraDocumentosHabilitantes.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" ' + estructuraDocumentosHabilitantes.required + ' ' + estructuraDocumentosHabilitantes.readonly + '></td>';
+                        break;
+                    default:
+                        innerHTML += '<td><input type="text" class="form-control ' + estructuraDocumentosHabilitantes.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" ' + estructuraDocumentosHabilitantes.required + ' ' + estructuraDocumentosHabilitantes.readonly + '></td>';
+                    }
+                }
+            }
+            tableRefDocH.insertRow().innerHTML = innerHTML;
+            contadorDocH ++;
         }
 
-        $('#dataTable tr').each(function(){
+    }
+
+    function addFieldsResumenRemesa(estructurasResumenRemesa){
+        let innerHTML = '<div class="form-row">';
+        let long = estructurasResumenRemesa.length;
+        let count = 1;
+
+        for(let e of estructurasResumenRemesa){
+            innerHTML += 
+            '<div class="form-group col-md-6 col-sm-12">'+
+            '<label for="ruc">' + e.texto + '</label>'+
+                '<div class="input-group mb-3">'+
+                    addFieldResumenRemesa(e)+
+                '</div>'+
+            '</div>';
+            if(long == count){
+                innerHTML +='</div>';
+            }else{
+                if(count % 2 === 0){
+                    innerHTML +='</div><div class="form-row">';
+                }
+            }
+            count ++;
+        }
+
+        $("#dataResumenRemesa").append(innerHTML);
+    }
+
+    function addFieldResumenRemesa(e){
+
+        let innerHTML = "";
+        let id = e.campo_id;
+
+        switch(e.type) {
+        case "text":
+            innerHTML += '<input type="text" class="form-control ' + e.class + '" id="' + id  + '" name="' + id + '" placeholder="" value="" onchange="' + e.onchange + '" maxlength="300" ' + e.required + ' ' + e.readonly + '>';
+            break;
+        case "number":
+            innerHTML += '<input type="number" class="form-control ' + e.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" onchange="' + e.onchange + '" maxlength="300" ' + e.required + ' ' + e.readonly + '>';
+            break;
+        case "date":
+            innerHTML += '<input type="date" class="form-control ' + e.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" ' + e.required + ' ' + e.readonly + '>';
+            break;
+        default:
+            innerHTML += '<input type="text" class="form-control ' + e.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" ' + e.required + ' ' + e.readonly + '>';
+        }
+        
+        return innerHTML;
+    }
+
+    function addColLiquidacionEconomica(estructuraLiquidacionEconomica){
+
+        let innerHTML = "";
+
+        let id = estructuraLiquidacionEconomica.campo_id + "_"+contadorColumnas;
+        switch(estructuraLiquidacionEconomica.type) {
+        case "text":
+            innerHTML += '<td><input type="text" class="form-control ' + estructuraLiquidacionEconomica.class + '" id="' + id  + '" name="' + id + '" placeholder="" value="" onchange="' + estructuraLiquidacionEconomica.onchange + '" maxlength="300" ' + estructuraLiquidacionEconomica.required + ' ' + estructuraLiquidacionEconomica.readonly + '></td>';
+            break;
+        case "number":
+            innerHTML += '<td><input type="number" class="form-control ' + estructuraLiquidacionEconomica.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" onchange="' + estructuraLiquidacionEconomica.onchange + '" maxlength="300" ' + estructuraLiquidacionEconomica.required + ' ' + estructuraLiquidacionEconomica.readonly + '></td>';
+            break;
+        case "date":
+            innerHTML += '<td><input type="date" class="form-control ' + estructuraLiquidacionEconomica.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" ' + estructuraLiquidacionEconomica.required + ' ' + estructuraLiquidacionEconomica.readonly + '></td>';
+            break;
+        default:
+            innerHTML += '<td><input type="text" class="form-control ' + estructuraLiquidacionEconomica.class + '" id="' + id + '" name="' + id + '" placeholder="" value="" ' + estructuraLiquidacionEconomica.required + ' ' + estructuraLiquidacionEconomica.readonly + '></td>';
+        }
+        
+        contadorColumnas ++;
+
+        return innerHTML;
+
+    }
+
+    function buildObject(){
+        
+        let rowFormaPago = 0;
+        let rowDocumentosHabilitantes = 0;
+        let rowLiquidacionEconomica = 0;
+        let headerFormaPago = [];
+        let headerDocumentosHabilitantes = [];
+        let headerResumenRemesa = [];
+        let headerLiquidacionEconomica = [];
+        let jsonArrObjFormaPago = [];
+        let jsonArrObjDocumentosHabilitantes = [];
+        let jsonArrObjResumenRemesa = {};
+        let jsonArrObjLiquidacionEconomica = [];
+        let jsonColLiquidacionEconomica = [];
+        let formaPago = {};
+        let documentosHabilitantes = {};
+        let resumenRemesa = [];
+        let liquidacionEconomica = {};
+
+        //Forma Pago
+        for (let estructuraFormatoPago of estructurasFormatoPago) {
+            headerFormaPago.push(estructuraFormatoPago.campo_id);
+        }
+
+        $('#dataTableFormaPago tr').each(function(){
             let jsonObj = {};
             let column = 0;
-            if(row != 0){
-                jsonObj[header[row-1]] = "";
+            if(rowFormaPago != 0){
+                jsonObj[headerFormaPago[rowFormaPago-1]] = "";
                 $(this).find('td').each(function(){
-                    if(header[column] !== undefined){
-                        jsonObj[header[column]] = $($(this).context.children).val();
+                    if(headerFormaPago[column] !== undefined){
+                        jsonObj[headerFormaPago[column]] = $($(this).context.children).val();
                     }
                     column ++;
                 })
-                jsonArrObj.push(jsonObj);
+                jsonArrObjFormaPago.push(jsonObj);
             }
-            row ++;
+            rowFormaPago ++;
         })
-        console.log(jsonArrObj);
+        formaPago = jsonArrObjFormaPago;
+        $('#forma_pago').val(JSON.stringify(formaPago));
+        console.log(formaPago);
+
+        //Documentos Habilitantes
+        for (let estructuraDocumentosHabilitantes of estructurasDocumentosHabilitantes.estructura) {
+            headerDocumentosHabilitantes.push(estructuraDocumentosHabilitantes.campo_id);
+        }
+
+        $('#dataTableDocumentosHabilitantes tr').each(function(){
+            let jsonObj = {};
+            let column = 0;
+            
+            jsonObj[headerDocumentosHabilitantes[rowDocumentosHabilitantes]] = "";
+            $(this).find('td').each(function(){
+                if(headerDocumentosHabilitantes[column] !== undefined){
+                    if(column == 0){
+                        jsonObj[headerDocumentosHabilitantes[column]] = this.textContent;
+                    }else{
+                        jsonObj[headerDocumentosHabilitantes[column]] = $($(this).context.children).val();
+                    }
+                }
+                column ++;
+            })
+            jsonArrObjDocumentosHabilitantes.push(jsonObj);
+            rowDocumentosHabilitantes ++;
+        })
+        documentosHabilitantes = jsonArrObjDocumentosHabilitantes;
+        console.log(documentosHabilitantes);
+        $('#documentos_habilitantes').val(JSON.stringify(documentosHabilitantes));
+
+
+        //Resumen Remesa
+        for (let estructuraResumenRemesa of estructurasResumenRemesa) {
+            jsonArrObjResumenRemesa[estructuraResumenRemesa.campo_id] = $('#'+estructuraResumenRemesa.campo_id).val();
+        }
+        resumenRemesa.push(jsonArrObjResumenRemesa);
+        console.log(resumenRemesa);
+        $('#resumen_remesa').val(JSON.stringify(resumenRemesa));
+        
+        //Liquidación Económica
+        let arrObjTemp = [];
+        
+        for (let estructuraLiquidacionEconomica of estructurasLiquidacionEconomica.estructura) {
+            headerLiquidacionEconomica.push(estructuraLiquidacionEconomica.campo_id);
+        }
+
+        for (let i=0;i<estructurasLiquidacionEconomica.numero_columnas;i++) {
+            arrObjTemp[i] = {};
+        }
+
+        $('#dataTableLiquidacionEconomica tr').each(function(){
+            let jsonObj = {};
+            let column = 0;
+
+            if(estructurasLiquidacionEconomica.direccion_header == "horizontal"){
+                if(rowLiquidacionEconomica != 0){
+                    jsonObj[headerLiquidacionEconomica[rowLiquidacionEconomica]] = "";
+                    $(this).find('td').each(function(){
+                        if(headerLiquidacionEconomica[column] !== undefined){
+                            if(column == 0){
+                                jsonObj[headerLiquidacionEconomica[column]] = this.textContent;
+                            }else{
+                                jsonObj[headerLiquidacionEconomica[column]] = $($(this).context.children).val();
+                            }
+                        }
+                        column ++;
+                    })
+                    jsonArrObjLiquidacionEconomica.push(jsonObj);
+                }
+                rowLiquidacionEconomica ++;
+            }else if(estructurasLiquidacionEconomica.direccion_header == "vertical"){
+                
+                $(this).find('td').each(function(){
+                    if(headerLiquidacionEconomica[rowLiquidacionEconomica] !== undefined){
+                        arrObjTemp[column][headerLiquidacionEconomica[rowLiquidacionEconomica]] = $($(this).context.children).val();
+                    }
+                    column ++;
+                })
+                rowLiquidacionEconomica ++;
+            }
+            
+        })
+
+        if(estructurasLiquidacionEconomica.direccion_header == "horizontal"){
+            liquidacionEconomica = jsonArrObjLiquidacionEconomica;
+        }else if(estructurasLiquidacionEconomica.direccion_header == "vertical"){
+            liquidacionEconomica = arrObjTemp;
+        }
+        
+        console.log(liquidacionEconomica);
+        $('#liquidacion_economica').val(JSON.stringify(liquidacionEconomica));
     }
 
 </script>

@@ -12,6 +12,8 @@ use App\Models\ControlPrevio;
 use App\Models\DocumentosHabilitantes;
 use App\Models\EstructuraDocumentosHabilitantes;
 use App\Models\EstructuraFormatoPago;
+use App\Models\EstructuraLiquidacionEconomica;
+use App\Models\EstructuraResumenRemesa;
 use App\Models\FormatoPago;
 use App\Models\TipoFormato;
 use Carbon\Carbon;
@@ -68,20 +70,27 @@ class ControlesPreviosController extends Controller
         
         $creado_por_id = Auth::id();
 
-        //Guarda el expediente
+        //Guarda el control previo
         $controlPrevio = new ControlPrevio();
-        $controlPrevio->victima = $request->victima;
-        $controlPrevio->id_de_proteccion = $request->id_de_proteccion;
-        $controlPrevio->proteccion_id = $request->proteccion_id;
-        $controlPrevio->peticionario_notificado = $request->peticionario_notificado;
-        $controlPrevio->nro_oficio_notificacion = $request->nro_oficio_notificacion;
-        $controlPrevio->documentacion_solicitada = $request->documentacion_solicitada;
-        $controlPrevio->tipo_respuesta_id = $request->tipo_respuesta_id;
-        $controlPrevio->observaciones = $request->observaciones;
-        $controlPrevio->estado_id = $request->estado_id;
-        $controlPrevio->semaforo_id = 1;
+        $controlPrevio->nro_control_previo_y_concurrente = $request->nro_control_previo_y_concurrente;
+        $controlPrevio->fecha_tramite = $request->fecha_tramite;
+        $controlPrevio->solicitud_pago = $request->solicitud_pago;
+        $controlPrevio->objeto = $request->objeto;
+        $controlPrevio->beneficiario = $request->beneficiario;
+        $controlPrevio->ruc = $request->ruc;
+        $controlPrevio->mes = $request->mes;
+        $controlPrevio->valor = $request->valor;
+        $controlPrevio->tipo_formato_id = $request->tipo_formato_id;
         $controlPrevio->creado_por_id = $creado_por_id;
         $controlPrevio->save();
+
+        $fp = new FormatoPago();
+        $fp->control_previo_id = $controlPrevio->id;
+        $fp->estructura_formato_pago_id = 1;
+        $fp->dato = $request->forma_pago;
+        //$fp->save();
+
+
 
         session()->flash('success', __('Control Previo ha sido creado satisfactoriamente. '));
         return redirect()->route('admin.controlesPrevios.index');
@@ -167,9 +176,13 @@ class ControlesPreviosController extends Controller
 
         $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::where('tipo_formato_id',$tipo_formato_id)->get('estructura');
         $estructurasFormatoPago = EstructuraFormatoPago::where('tipo_formato_id',$tipo_formato_id)->get('estructura');
+        $estructurasResumenRemesa = EstructuraResumenRemesa::where('tipo_formato_id',$tipo_formato_id)->get('estructura');
+        $estructurasLiquidacionEconomica = EstructuraLiquidacionEconomica::where('tipo_formato_id',$tipo_formato_id)->get('estructura');
 
         $data['estructurasDocumentosHabilitantes'] = $estructurasDocumentosHabilitantes;
         $data['estructurasFormatoPago'] = $estructurasFormatoPago;
+        $data['estructurasResumenRemesa'] = $estructurasResumenRemesa;
+        $data['estructurasLiquidacionEconomica'] = $estructurasLiquidacionEconomica;
         $data['roles'] = Role::all();
   
         return response()->json($data);

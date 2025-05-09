@@ -10,6 +10,8 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\EstadosController;
 use App\Http\Controllers\Backend\EstructurasDocumentosHabilitantesController;
 use App\Http\Controllers\Backend\EstructurasFormatoPagoController;
+use App\Http\Controllers\Backend\EstructurasLiquidacionEconomicaController;
+use App\Http\Controllers\Backend\EstructurasResumenRemesaController;
 use App\Http\Controllers\Backend\RolesController;
 use App\Http\Controllers\Backend\ExpedientesController;
 use App\Http\Controllers\Backend\ProteccionesController;
@@ -54,6 +56,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('tiposFormato', TiposFormatoController::class);
     Route::resource('estructurasFormatoPago', EstructurasFormatoPagoController::class);
     Route::resource('estructurasDocumentosHabilitantes', EstructurasDocumentosHabilitantesController::class);
+    Route::resource('estructurasResumenRemesa', EstructurasResumenRemesaController::class);
+    Route::resource('estructurasLiquidacionEconomica', EstructurasLiquidacionEconomicaController::class);
     
     Route::resource('controlesPrevios', ControlesPreviosController::class);
     Route::resource('reportes', ReportesController::class);

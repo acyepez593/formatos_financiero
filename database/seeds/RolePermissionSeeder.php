@@ -99,6 +99,17 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
+                'group_name' => 'estructuraFormatoPago',
+                'permissions' => [
+                    // estructuraFormatoPago Permissions
+                    'estructuraFormatoPago.create',
+                    'estructuraFormatoPago.view',
+                    'estructuraFormatoPago.edit',
+                    'estructuraFormatoPago.delete',
+                    
+                ]
+            ],
+            [
                 'group_name' => 'estructuraDocumentosHabilitantes',
                 'permissions' => [
                     // estructuraDocumentosHabilitantes Permissions
@@ -110,13 +121,24 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
-                'group_name' => 'estructuraFormatoPago',
+                'group_name' => 'estructuraResumenRemesa',
                 'permissions' => [
-                    // estructuraFormatoPago Permissions
-                    'estructuraFormatoPago.create',
-                    'estructuraFormatoPago.view',
-                    'estructuraFormatoPago.edit',
-                    'estructuraFormatoPago.delete',
+                    // estructuraResumenRemesa Permissions
+                    'estructuraResumenRemesa.create',
+                    'estructuraResumenRemesa.view',
+                    'estructuraResumenRemesa.edit',
+                    'estructuraResumenRemesa.delete',
+                    
+                ]
+            ],
+            [
+                'group_name' => 'estructuraLiquidacionEconomica',
+                'permissions' => [
+                    // estructuraLiquidacionEconomica Permissions
+                    'estructuraLiquidacionEconomica.create',
+                    'estructuraLiquidacionEconomica.view',
+                    'estructuraLiquidacionEconomica.edit',
+                    'estructuraLiquidacionEconomica.delete',
                     
                 ]
             ],

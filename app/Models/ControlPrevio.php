@@ -30,6 +30,7 @@ class ControlPrevio extends Authenticatable
         'ruc',
         'mes',
         'valor',
+        'servidor_publico'
     ];
 
     protected $dates = ['deleted_at'];

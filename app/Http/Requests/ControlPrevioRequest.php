@@ -31,7 +31,8 @@ class ControlPrevioRequest extends FormRequest
             'beneficiario' => 'required|max:200',
             'ruc' => 'required|max:13',
             'mes' => 'required',
-            'valor' => 'required'
+            'valor' => 'required',
+            'servidor_publico' => 'required'
 
         ];
     }

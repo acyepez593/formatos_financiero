@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
   
-class DocumentosHabilitantes extends Authenticatable
+class EstructuraLiquidacionEconomica extends Authenticatable
 {
     use Notifiable, HasRoles, SoftDeletes;
 
@@ -18,17 +18,13 @@ class DocumentosHabilitantes extends Authenticatable
      *
      * @var string
      */
-    protected $table = 'documentos_habilitantes';
-    protected $guard_name = 'documentos_habilitantes';
+    protected $table = 'estructuras_liquidacion_economica';
+    protected $guard_name = 'estructuras_liquidacion_economica';
   
     protected $fillable = [
-        'control_previo_id',
-        'esctructura_docu_habi_id',
-        'datos',
-    ];
-
-    protected $casts = [
-        'datos' => 'json'    
+        'descripcion',
+        'tipo_formato_id',
+        'estructura',
     ];
 
     protected $dates = ['deleted_at'];
