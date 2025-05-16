@@ -25,8 +25,8 @@ class DocumentosHabilitantesRequest extends FormRequest
     {
         return [
             'control_previo_id' => 'required',
-            'estructura_formato_pago_id' => 'required',
-            'dato' => 'required'
+            'esctructura_docu_habi_id' => 'required',
+            'datos' => 'required'
         ];
     }
 
@@ -39,8 +39,8 @@ class DocumentosHabilitantesRequest extends FormRequest
     {
         return [
             'control_previo_id.required' => 'El campo :attribute es requerido',
-            'estructura_formato_pago_id.required' => 'El campo :attribute es requerido',
-            'dato.required' => 'El campo :attribute es requerido'
+            'esctructura_docu_habi_id.required' => 'El campo :attribute es requerido',
+            'datos.required' => 'El campo :attribute es requerido'
         ];
     }
 }

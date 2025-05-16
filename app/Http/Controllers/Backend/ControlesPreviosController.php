@@ -10,6 +10,8 @@ use App\Http\Requests\ControlPrevioRequest;
 use App\Models\Admin;
 use App\Models\ControlPrevio;
 use App\Models\DocumentosHabilitantes;
+use App\Models\ResumenRemesa;
+use App\Models\LiquidacionEconomica;
 use App\Models\EstructuraDocumentosHabilitantes;
 use App\Models\EstructuraFormatoPago;
 use App\Models\EstructuraLiquidacionEconomica;
@@ -34,21 +36,27 @@ class ControlesPreviosController extends Controller
     {
         $this->checkAuthorization(auth()->user(), ['controlPrevio.view']);
 
-        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::get(["nombre", "id"]);
-        $estructurasFormatoPago = EstructuraFormatoPago::get(["nombre", "id"]);
-        $tiposFormato = TipoFormato::get(["nombre", "id"]);
-        $documentosHabilitantes = DocumentosHabilitantes::get(["nombre", "id"]);
-        $formatosPago = FormatoPago::get(["nombre", "id"]);
+        $usuarioActual = Auth::id();
 
-        $responsables = Admin::get(["name", "id"]);
+        $controlesPrevios = ControlPrevio::where('creado_por_id',$usuarioActual)->get();
+        $controlesPreviosIds = $controlesPrevios->get(['id'])->pluck('id');
+        
+        $formatosPago = FormatoPago::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $documentosHabilitantes = DocumentosHabilitantes::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $resumenesRemesa = ResumenRemesa::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $liquidacionesEconomicas = LiquidacionEconomica::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $tiposFormato = TipoFormato::get(["nombre", "id"]);
+
+        $servidoresPublicos = Admin::get(["name", "id"]);
 
         return view('backend.pages.controlesPrevios.index', [
-            'estructurasDocumentosHabilitantes' => $estructurasDocumentosHabilitantes,
-            'estructurasFormatoPago' => $estructurasFormatoPago,
-            'tiposFormato' => $tiposFormato,
-            'documentosHabilitantes' => $documentosHabilitantes,
+            'controlesPrevios' => $controlesPrevios,
             'formatosPago' => $formatosPago,
-            'responsables' => $responsables
+            'documentosHabilitantes' => $documentosHabilitantes,
+            'resumenesRemesa' => $resumenesRemesa,
+            'liquidacionesEconomicas' => $liquidacionesEconomicas,
+            'tiposFormato' => $tiposFormato,
+            'servidoresPublicos' => $servidoresPublicos
         ]);
     }
 
@@ -84,35 +92,39 @@ class ControlesPreviosController extends Controller
         $controlPrevio->ruc = $request->ruc;
         $controlPrevio->mes = $request->mes;
         $controlPrevio->valor = $request->valor;
-        
+
         $controlPrevio->creado_por_id = $creado_por_id;
         $controlPrevio->save();
 
-        $estructuraFormatoPago = EstructuraFormatoPago::where('tipo_formato_id',$tipo_formato_id)->first();
+        $estructurasFormatoPago = EstructuraFormatoPago::where('tipo_formato_id',$tipo_formato_id)->first();
+
         $fp = new FormatoPago();
         $fp->control_previo_id = $controlPrevio->id;
-        $fp->estructura_formato_pago_id = $estructuraFormatoPago->id;
+        $fp->estructura_formato_pago_id = $estructurasFormatoPago->id;
         $fp->datos = json_decode($request->forma_pago, true);
         $fp->save();
 
-        $estructuraDocumentosHabilitantes = EstructuraDocumentosHabilitantes::where('tipo_formato_id',$tipo_formato_id)->first();
+        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::where('tipo_formato_id',$tipo_formato_id)->first();
+
         $dh = new DocumentosHabilitantes();
         $dh->control_previo_id = $controlPrevio->id;
-        $dh->esctructura_docu_habi_id = $estructuraDocumentosHabilitantes->id;
+        $dh->esctructura_docu_habi_id = $estructurasDocumentosHabilitantes->id;
         $dh->datos = json_decode($request->documentos_habilitantes, true);
         $dh->save();
 
-        $estructuraResumenRemesa = EstructuraResumenRemesa::where('tipo_formato_id',$tipo_formato_id)->first();
+        $estructurasResumenRemesa = EstructuraResumenRemesa::where('tipo_formato_id',$tipo_formato_id)->first();
+
         $rr = new ResumenRemesa();
         $rr->control_previo_id = $controlPrevio->id;
-        $rr->esctructura_resumen_remesa_id = $estructuraResumenRemesa->id;
+        $rr->esctructura_resume_remesa_id = $estructurasResumenRemesa->id;
         $rr->datos = json_decode($request->resumen_remesa, true);
         $rr->save();
 
-        $estructuraLiquidacionEconomica = EstructuraLiquidacionEconomica::where('tipo_formato_id',$tipo_formato_id)->first();
+        $estructurasLiquidacionEconomica = EstructuraLiquidacionEconomica::where('tipo_formato_id',$tipo_formato_id)->first();
+
         $le = new LiquidacionEconomica();
         $le->control_previo_id = $controlPrevio->id;
-        $le->esctructura_liq_eco_id	 = $estructuraLiquidacionEconomica->id;
+        $le->esctructura_liq_eco_id = $estructurasLiquidacionEconomica->id;
         $le->datos = json_decode($request->liquidacion_economica, true);
         $le->save();
 

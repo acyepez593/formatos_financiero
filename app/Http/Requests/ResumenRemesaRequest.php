@@ -6,7 +6,7 @@ namespace App\Http\Requests;
   
 use Illuminate\Foundation\Http\FormRequest;
   
-class FormatoPagoRequest extends FormRequest
+class ResumenRemesaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class FormatoPagoRequest extends FormRequest
     {
         return [
             'control_previo_id' => 'required',
-            'estructura_formato_pago_id' => 'required',
+            'esctructura_resume_remesa_id' => 'required',
             'datos' => 'required'
         ];
     }
@@ -39,7 +39,7 @@ class FormatoPagoRequest extends FormRequest
     {
         return [
             'control_previo_id.required' => 'El campo :attribute es requerido',
-            'estructura_formato_pago_id.required' => 'El campo :attribute es requerido',
+            'esctructura_resume_remesa_id.required' => 'El campo :attribute es requerido',
             'datos.required' => 'El campo :attribute es requerido'
         ];
     }
