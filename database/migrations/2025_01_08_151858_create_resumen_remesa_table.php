@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('control_previo_id');
             $table->index('control_previo_id');
-            $table->unsignedBigInteger('esctructura_resume_remesa_id');
-            $table->index('esctructura_resume_remesa_id');
+            $table->unsignedBigInteger('esctructura_resumen_remesa_id');
+            $table->index('esctructura_resumen_remesa_id');
             $table->json("datos")->nullable();
             $table->softDeletes();
             $table->timestamps();

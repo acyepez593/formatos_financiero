@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
   
-class ResumenRemesa extends Authenticatable
+class LiquidacionEconomica extends Authenticatable
 {
     use Notifiable, HasRoles, SoftDeletes;
 

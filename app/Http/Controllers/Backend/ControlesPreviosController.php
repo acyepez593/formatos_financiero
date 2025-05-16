@@ -15,6 +15,8 @@ use App\Models\EstructuraFormatoPago;
 use App\Models\EstructuraLiquidacionEconomica;
 use App\Models\EstructuraResumenRemesa;
 use App\Models\FormatoPago;
+use App\Models\LiquidacionEconomica;
+use App\Models\ResumenRemesa;
 use App\Models\TipoFormato;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -71,6 +73,8 @@ class ControlesPreviosController extends Controller
         $creado_por_id = Auth::id();
 
         //Guarda el control previo
+        $tipo_formato_id = $request->tipo_formato_id;
+
         $controlPrevio = new ControlPrevio();
         $controlPrevio->nro_control_previo_y_concurrente = $request->nro_control_previo_y_concurrente;
         $controlPrevio->fecha_tramite = $request->fecha_tramite;
@@ -80,17 +84,37 @@ class ControlesPreviosController extends Controller
         $controlPrevio->ruc = $request->ruc;
         $controlPrevio->mes = $request->mes;
         $controlPrevio->valor = $request->valor;
-        $controlPrevio->tipo_formato_id = $request->tipo_formato_id;
+        
         $controlPrevio->creado_por_id = $creado_por_id;
         $controlPrevio->save();
 
+        $estructuraFormatoPago = EstructuraFormatoPago::where('tipo_formato_id',$tipo_formato_id)->first();
         $fp = new FormatoPago();
         $fp->control_previo_id = $controlPrevio->id;
-        $fp->estructura_formato_pago_id = 1;
-        $fp->dato = $request->forma_pago;
-        //$fp->save();
+        $fp->estructura_formato_pago_id = $estructuraFormatoPago->id;
+        $fp->datos = json_decode($request->forma_pago, true);
+        $fp->save();
 
+        $estructuraDocumentosHabilitantes = EstructuraDocumentosHabilitantes::where('tipo_formato_id',$tipo_formato_id)->first();
+        $dh = new DocumentosHabilitantes();
+        $dh->control_previo_id = $controlPrevio->id;
+        $dh->esctructura_docu_habi_id = $estructuraDocumentosHabilitantes->id;
+        $dh->datos = json_decode($request->documentos_habilitantes, true);
+        $dh->save();
 
+        $estructuraResumenRemesa = EstructuraResumenRemesa::where('tipo_formato_id',$tipo_formato_id)->first();
+        $rr = new ResumenRemesa();
+        $rr->control_previo_id = $controlPrevio->id;
+        $rr->esctructura_resumen_remesa_id = $estructuraResumenRemesa->id;
+        $rr->datos = json_decode($request->resumen_remesa, true);
+        $rr->save();
+
+        $estructuraLiquidacionEconomica = EstructuraLiquidacionEconomica::where('tipo_formato_id',$tipo_formato_id)->first();
+        $le = new LiquidacionEconomica();
+        $le->control_previo_id = $controlPrevio->id;
+        $le->esctructura_liq_eco_id	 = $estructuraLiquidacionEconomica->id;
+        $le->datos = json_decode($request->liquidacion_economica, true);
+        $le->save();
 
         session()->flash('success', __('Control Previo ha sido creado satisfactoriamente. '));
         return redirect()->route('admin.controlesPrevios.index');

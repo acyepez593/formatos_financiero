@@ -26,7 +26,7 @@ class EstructuraDocumentosHabilitantesRequest extends FormRequest
         return [
             'descripcion' => 'required|max:500',
             'tipo_formato_id' => 'required',
-            'estructura' => 'required|max:2000'
+            'estructura' => 'required|max:5000'
         ];
     }
 }

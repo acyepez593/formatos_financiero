@@ -27,8 +27,6 @@ return new class extends Migration
             $table->date('mes');
             $table->string('valor');
             $table->index('valor');
-            $table->string('servidor_publico');
-            $table->index('servidor_publico');
             $table->unsignedBigInteger('creado_por_id');
             $table->index('creado_por_id');
             $table->boolean('es_historico')->default(false);

@@ -23,7 +23,7 @@ class ResumenRemesa extends Authenticatable
   
     protected $fillable = [
         'control_previo_id',
-        'esctructura_resume_remesa_id',
+        'esctructura_resumen_remesa_id',
         'datos',
     ];
 
