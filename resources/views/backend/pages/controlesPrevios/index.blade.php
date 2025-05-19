@@ -89,38 +89,53 @@
                                     <form>
                                         <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
-                                                <label for="victima_search">Víctima</label>
-                                                <input type="text" class="form-control" id="victima_search" name="victima_search" placeholder="">
-                                            </div>
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="id_de_proteccion_search">Buscar por Id de Protección</label>
-                                                <input type="text" class="form-control" id="id_de_proteccion_search" name="id_de_proteccion_search" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="proteccion_id_search">Buscar por Protección:</label>
-                                                <select id="proteccion_id_search" name="proteccion_id_search" class="form-control selectpicker" data-live-search="true" multiple required>
-                                                    <option value="">Seleccione una Protección</option>
-                                                    @foreach ($protecciones as $key => $value)
+                                                <label for="tipo_formato_id_search">Buscar por Tipo Formato:</label>
+                                                <select id="tipo_formato_id_search" name="proteccion_id_search" class="form-control selectpicker" data-live-search="true" multiple required>
+                                                    <option value="">Seleccione un Tipo Formato</option>
+                                                    @foreach ($tiposFormato as $key => $value)
                                                         <option value="{{ $value->id }}">{{ $value->nombre }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-6 col-sm-12">
-                                                <label for="peticionario_notificado_search">Buscar por Peticionario Notificado</label>
-                                                <input type="text" class="form-control" id="peticionario_notificado_search" name="peticionario_notificado_search" placeholder="">
+                                                <label for="nro_control_previo_y_concurrente_search">Buscar por Informe de Control Previo y Control Concurrente No.</label>
+                                                <input type="text" class="form-control" id="nro_control_previo_y_concurrente_search" name="nro_control_previo_y_concurrente_search" placeholder="">
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
-                                                <label for="nro_oficio_notificacion_search">Buscar por Nro. Oficio Notificación</label>
-                                                <input type="text" class="form-control" id="nro_oficio_notificacion_search" name="nro_oficio_notificacion_search" placeholder="">
+                                                <label for="fecha_tramite_search">Buscar por Fecha de Trámite</label>
+                                                <div class="datepicker date input-group">
+                                                    <input type="text" class="form-control" id="fecha_tramite_search" name="fecha_tramite_search" placeholder="">
+                                                    <div class="input-group-append">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="form-group col-md-6 col-sm-12">
-                                                <label for="fecha_notificacion_search">Buscar por Fecha de Notificación</label>
+                                                <label for="solicitud_pago_search">Buscar por Solicitud Pago</label>
+                                                <input type="text" class="form-control" id="solicitud_pago_search" name="solicitud_pago_search" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6 col-sm-12">
+                                                <label for="objeto_search">Buscar por Objeto</label>
+                                                <input type="text" class="form-control" id="objeto_search" name="objeto_search" placeholder="">
+                                            </div>    
+                                            <div class="form-group col-md-6 col-sm-12">
+                                                <label for="beneficiario_search">Buscar por Beneficiario</label>
+                                                <input type="text" class="form-control" id="beneficiario_search" name="beneficiario_search" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6 col-sm-12">
+                                                <label for="ruc_search">Buscar por RUC</label>
+                                                <input type="text" class="form-control" id="ruc_search" name="ruc_search" placeholder="">
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12">
+                                                <label for="mes_search">Buscar por Mes</label>
                                                 <div class="datepicker date input-group">
-                                                    <input type="text" class="form-control" id="fecha_notificacion_search" name="fecha_notificacion_search" placeholder="">
+                                                    <input type="text" class="form-control" id="mes_search" name="mes_search" placeholder="">
                                                     <div class="input-group-append">
                                                     <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                                     </div>
@@ -129,67 +144,22 @@
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
-                                                <label for="responsables_ids_search">Buscar por Responsable:</label>
-                                                <select id="responsables_ids_search" name="responsables_ids_search" class="form-control selectpicker" data-live-search="true" multiple required>
-                                                    <option value="">Seleccione una Responsable</option>
-                                                    @foreach ($responsables as $key => $value)
-                                                        <option value="{{ $value->id }}">{{ $value->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <label for="valor_search">Buscar por Valor</label>
+                                                <input type="text" class="form-control" id="valor_search" name="valor_search" placeholder="">
                                             </div>
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="fecha_maxima_respuesta_search">Buscar por Fecha Máxima de Respuesta</label>
-                                                <div class="datepicker date input-group">
-                                                    <input type="text" class="form-control" id="fecha_maxima_respuesta_search" name="fecha_maxima_respuesta_search" placeholder="">
-                                                    <div class="input-group-append">
-                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="documentacion_solicitada_search">Buscar por Documentación Solicitada</label>
-                                                <input type="text" class="form-control" id="documentacion_solicitada_search" name="documentacion_solicitada_search" placeholder="">
-                                            </div>
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="observaciones_search">Buscar por Observaciones</label>
-                                                <input type="text" class="form-control" id="observaciones_search" name="observaciones_search" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="tipo_respuesta_id_search">Buscar por Respuesta:</label>
-                                                <select id="tipo_respuesta_id_search" name="tipo_respuesta_id_search" class="form-control selectpicker" data-live-search="true" multiple required>
-                                                    <option value="">Seleccione una Respuesta</option>
-                                                    @foreach ($tiposRespuesta as $key => $value)
-                                                        <option value="{{ $value->id }}">{{ $value->nombre }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-md-6 col-sm-12">
-                                                <label for="estado_id_search">Buscar por Estado:</label>
-                                                <select id="estado_id_search" name="estado_id_search" class="form-control selectpicker" data-live-search="true" multiple required>
-                                                    <option value="">Seleccione un Estado</option>
-                                                    @foreach ($estados as $key => $value)
-                                                        <option value="{{ $value->id }}">{{ $value->nombre }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
                                                 <label for="creado_por_id_search">Buscar por Creador por:</label>
                                                 <select id="creado_por_id_search" name="creado_por_id_search" class="form-control selectpicker" data-live-search="true" multiple>
                                                     <option value="">Seleccione un Creado por</option>
-                                                    @foreach ($responsables as $key => $value)
+                                                    @foreach ($servidoresPublicos as $key => $value)
                                                         <option value="{{ $value->id }}" {{ Auth::user()->id == $value->id ? 'selected' : ''}}>{{ $value->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
+                                            
 
-                                        <button type="button" id="buscarExpedientes" class="btn btn-primary mt-4 pr-4 pl-4">Buscar</button>
+                                        <button type="button" id="buscarControlesPrevios" class="btn btn-primary mt-4 pr-4 pl-4">Buscar</button>
                                     </form>
                                 </div>
                             </div>

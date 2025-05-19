@@ -17,8 +17,6 @@ use App\Models\EstructuraFormatoPago;
 use App\Models\EstructuraLiquidacionEconomica;
 use App\Models\EstructuraResumenRemesa;
 use App\Models\FormatoPago;
-use App\Models\LiquidacionEconomica;
-use App\Models\ResumenRemesa;
 use App\Models\TipoFormato;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -39,7 +37,7 @@ class ControlesPreviosController extends Controller
         $usuarioActual = Auth::id();
 
         $controlesPrevios = ControlPrevio::where('creado_por_id',$usuarioActual)->get();
-        $controlesPreviosIds = $controlesPrevios->get(['id'])->pluck('id');
+        $controlesPreviosIds = ControlPrevio::get(['id'])->pluck('id');
         
         $formatosPago = FormatoPago::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
         $documentosHabilitantes = DocumentosHabilitantes::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
@@ -116,7 +114,7 @@ class ControlesPreviosController extends Controller
 
         $rr = new ResumenRemesa();
         $rr->control_previo_id = $controlPrevio->id;
-        $rr->esctructura_resume_remesa_id = $estructurasResumenRemesa->id;
+        $rr->esctructura_resumen_remesa_id = $estructurasResumenRemesa->id;
         $rr->datos = json_decode($request->resumen_remesa, true);
         $rr->save();
 

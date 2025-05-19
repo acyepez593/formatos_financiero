@@ -86,7 +86,7 @@ Crear Control Previo - Admin Panel
                                 </div>
                             </div>
                             <div class="form-group col-md-6 col-sm-12">
-                                <label for="solicitud_pago">Objeto</label>
+                                <label for="objeto">Objeto</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control @error('objeto') is-invalid @enderror" id="objeto" name="objeto" placeholder="" value="{{ old('objeto') }}" maxlength="1000" required>
                                     @error('objeto')
