@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('title')
-    {{ __('Expedientes - Panel de Expediente') }}
+    {{ __('Controles Previos - Panel de Control Previo') }}
 @endsection
 
 @section('styles')
@@ -53,10 +53,10 @@
     <div class="row align-items-center">
         <div class="col-sm-6">
             <div class="breadcrumbs-area clearfix">
-                <h4 class="page-title pull-left">{{ __('Expedientes') }}</h4>
+                <h4 class="page-title pull-left">{{ __('Controles Previos') }}</h4>
                 <ul class="breadcrumbs pull-left">
                     <li><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                    <li><span>{{ __('Todos los Expedientes') }}</span></li>
+                    <li><span>{{ __('Todos los Controles Previos') }}</span></li>
                 </ul>
             </div>
         </div>
@@ -157,7 +157,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                            
 
                                         <button type="button" id="buscarControlesPrevios" class="btn btn-primary mt-4 pr-4 pl-4">Buscar</button>
                                     </form>
@@ -168,7 +167,7 @@
                             <div class="card-header" id="headingTwo">
                             <h5 class="mb-0">
                                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                Expedientes
+                                Controles Previos
                                 </button>
                             </h5>
                             </div>
@@ -254,7 +253,7 @@
                 this.value = this.value.toUpperCase();
             });*/
 
-            $( "#buscarExpedientes" ).on( "click", function() {
+            $( "#buscarControlesPrevios" ).on( "click", function() {
                 $("#overlay").fadeIn(300);
                 $('#dataTable').empty();
 
@@ -277,21 +276,18 @@
 
         function loadDataTable(){
             $.ajax({
-                url: "{{url('/getExpedientesByFilters')}}",
+                url: "{{url('/getControlesPreviosByFilters')}}",
                 method: "POST",
                 data: {
-                    victima_search: $('#victima_search').val(),
-                    id_de_proteccion_search: $('#id_de_proteccion_search').val(),
-                    proteccion_id_search: JSON.stringify($('#proteccion_id_search').val()),
-                    peticionario_notificado_search: $('#peticionario_notificado_search').val(),
-                    nro_oficio_notificacion_search: $('#nro_oficio_notificacion_search').val(),
-                    fecha_notificacion_search: $('#fecha_notificacion_search').val(),
-                    responsables_ids_search: JSON.stringify($('#responsables_ids_search').val()),
-                    fecha_maxima_respuesta_search: $('#fecha_maxima_respuesta_search').val(),
-                    documentacion_solicitada_search: $('#documentacion_solicitada_search').val(),
-                    observaciones_search: $('#observaciones_search').val(),
-                    tipo_respuesta_id_search: JSON.stringify($('#tipo_respuesta_id_search').val()),
-                    estado_id_search: JSON.stringify($('#estado_id_search').val()),
+                    tipo_formato_id_search: JSON.stringify($('#tipo_formato_id_search').val()),
+                    nro_control_previo_y_concurrente_search: $('#nro_control_previo_y_concurrente_search').val(),
+                    fecha_tramite_search: $('#fecha_tramite_search').val(),
+                    solicitud_pago_search: JSON.stringify($('#solicitud_pago_search').val()),
+                    objeto_search: $('#objeto_search').val(),
+                    beneficiario_search: $('#beneficiario_search').val(),
+                    ruc_search: $('#ruc_search').val(),
+                    mes_search: $('#mes_search').val(),
+                    valor_search: $('#valor_search').val(),
                     creado_por_id_search: JSON.stringify($('#creado_por_id_search').val()),
                     _token: '{{csrf_token()}}'
                 },
@@ -301,7 +297,7 @@
 
                     $("#collapseTwo").collapse('show');
 
-                    expedientes = response.expedientes;
+                    controlesPrevios = response.controlesPrevios;
                     protecciones = response.protecciones;
                     estados = response.estados;
                     tiposRespuesta = response.tiposRespuesta;
@@ -313,57 +309,52 @@
                     tableHeaderRef = document.getElementById('dataTable').getElementsByTagName('thead')[0];
 
                     tableHeaderRef.insertRow().innerHTML = 
-                        "<th>#</th>"+
-                        "<th>Víctima</th>"+
-                        "<th>Id de Protección</th>"+
-                        "<th>Protección</th>"+
-                        "<th>Peticionario Notificado</th>"+
-                        "<th>Nro. Oficio Notificación</th>"+
-                        "<th>Fecha de Notificación</th>"+
-                        "<th>Responsable</th>"+
-                        "<th>Fecha Máxima de Respuesta</th>"+
-                        "<th>Documentación Solicitada</th>"+
-                        "<th>Observaciones</th>"+
-                        "<th>Respuesta</th>"+
-                        "<th>Estado</th>"+
-                        "<th>Estado Semárofo</th>"+
-                        "<th>Creado Por</th>"+
+                        "<th>Tipo Formato</th>"+    
+                        "<th># Control Previo</th>"+
+                        "<th>Fecha Trámite</th>"+
+                        "<th>Solicitud de Pago</th>"+
+                        "<th>Objeto</th>"+
+                        "<th>Beneficiario</th>"+
+                        "<th>RUC</th>"+
+                        "<th>Mes</th>"+
+                        "<th>Valor</th>"+
+                        "<th>Servidor Público</th>"+
                         "<th>Acción</th>";
 
                     tableRef = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
 
                     let contador = 1;
                     let meses = [{"id":"01","nombre":"Enero"},{"id":"02","nombre":"Febrero"},{"id":"03","nombre":"Marzo"},{"id":"04","nombre":"Abril"},{"id":"05","nombre":"Mayo"},{"id":"06","nombre":"Junio"},{"id":"07","nombre":"Julio"},{"id":"08","nombre":"Agosto"},{"id":"09","nombre":"Septiembre"},{"id":"10","nombre":"Octubre"},{"id":"11","nombre":"Noviembre"},{"id":"12","nombre":"Diciembre"}];
-                    for (let expediente of expedientes) {
+                    for (let registro of registros) {
                         
-                        let rutaEdit = "{{url()->current()}}"+"/"+expediente.id+"/edit";
-                        let rutaDelete = "{{url()->current()}}"+"/"+expediente.id;
+                        let rutaEdit = "{{url()->current()}}"+"/"+registro.id+"/edit";
+                        let rutaDelete = "{{url()->current()}}"+"/"+registro.id;
 
                         let innerHTML = "";
                         let htmlEdit = "";
                         let htmlDelete = "";
                         let mes = "";
                         let anio = "";
-                        htmlEdit +=@if (auth()->user()->can('expediente.edit')) '<a class="btn btn-success text-white" href="'+rutaEdit+'">Editar</a>' @else '' @endif;
-                        htmlDelete += @if (auth()->user()->can('expediente.delete')) '<a class="btn btn-danger text-white" href="javascript:void(0);" onclick="event.preventDefault(); deleteDialog('+expediente.id+')">Borrar</a> <form id="delete-form-'+expediente.id+'" action="'+rutaDelete+'" method="POST" style="display: none;">@method('DELETE')@csrf</form>' @else '' @endif;
+                        htmlEdit +=@if (auth()->user()->can('registro.edit')) '<a class="btn btn-success text-white" href="'+rutaEdit+'">Editar</a>' @else '' @endif;
+                        htmlDelete += @if (auth()->user()->can('registro.delete')) '<a class="btn btn-danger text-white" href="javascript:void(0);" onclick="event.preventDefault(); deleteDialog('+expediente.id+')">Borrar</a> <form id="delete-form-'+expediente.id+'" action="'+rutaDelete+'" method="POST" style="display: none;">@method('DELETE')@csrf</form>' @else '' @endif;
 
                         innerHTML += 
                             "<td>"+ contador+ "</td>"+
-                            "<td>"+ expediente.victima+ "</td>"+
-                            "<td>"+ expediente.id_de_proteccion+ "</td>"+
-                            "<td>"+ expediente.proteccion_nombre+ "</td>"+
-                            "<td>"+ expediente.peticionario_notificado+ "</td>"+
-                            "<td>"+ expediente.nro_oficio_notificacion+ "</td>"+
-                            "<td>"+ expediente.fecha_notificacion+ "</td>"+
-                            "<td>"+ expediente.responsables_nombres+ "</td>"+
-                            "<td>"+ expediente.fecha_maxima_respuesta+ "</td>"+
-                            "<td>"+ expediente.documentacion_solicitada+ "</td>"+
-                            "<td>"+ expediente.observaciones+ "</td>"+
-                            "<td>"+ expediente.tipo_respuesta_nombre+ "</td>"+
-                            "<td>"+ expediente.estado_nombre+ "</td>"+
-                            "<td>"+ expediente.semaforo_estado+ "</td>"+
-                            "<td>"+ expediente.creado_por_nombre+ "</td>";
-                            if(expediente.esCreadorRegistro){
+                            "<td>"+ registro.victima+ "</td>"+
+                            "<td>"+ registro.id_de_proteccion+ "</td>"+
+                            "<td>"+ registro.proteccion_nombre+ "</td>"+
+                            "<td>"+ registro.peticionario_notificado+ "</td>"+
+                            "<td>"+ registro.nro_oficio_notificacion+ "</td>"+
+                            "<td>"+ registro.fecha_notificacion+ "</td>"+
+                            "<td>"+ registro.responsables_nombres+ "</td>"+
+                            "<td>"+ registro.fecha_maxima_respuesta+ "</td>"+
+                            "<td>"+ registro.documentacion_solicitada+ "</td>"+
+                            "<td>"+ registro.observaciones+ "</td>"+
+                            "<td>"+ registro.tipo_respuesta_nombre+ "</td>"+
+                            "<td>"+ registro.estado_nombre+ "</td>"+
+                            "<td>"+ registro.semaforo_estado+ "</td>"+
+                            "<td>"+ registro.creado_por_nombre+ "</td>";
+                            if(registro.esCreadorRegistro){
                                 innerHTML +="<td>" + htmlEdit + htmlDelete + "</td>";
                             }else{
                                 innerHTML += "<td></td>";
