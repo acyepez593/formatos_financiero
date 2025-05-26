@@ -78,10 +78,11 @@ class ControlesPreviosController extends Controller
         
         $creado_por_id = Auth::id();
 
-        //Guarda el control previo
+        //Guarda el Control Previo
         $tipo_formato_id = $request->tipo_formato_id;
 
         $controlPrevio = new ControlPrevio();
+        $controlPrevio->tipo_formato_id = $tipo_formato_id;
         $controlPrevio->nro_control_previo_y_concurrente = $request->nro_control_previo_y_concurrente;
         $controlPrevio->fecha_tramite = $request->fecha_tramite;
         $controlPrevio->solicitud_pago = $request->solicitud_pago;
@@ -90,7 +91,6 @@ class ControlesPreviosController extends Controller
         $controlPrevio->ruc = $request->ruc;
         $controlPrevio->mes = $request->mes;
         $controlPrevio->valor = $request->valor;
-
         $controlPrevio->creado_por_id = $creado_por_id;
         $controlPrevio->save();
 
@@ -138,23 +138,23 @@ class ControlesPreviosController extends Controller
         if($controlPrevio->creado_por_id != Auth::id()){
             abort(403, 'Lo sentimos !! Usted no está autorizado para realizar esta acción.');
         }
+        
+        $formatoPago = FormatoPago::where('control_previo_id',$id)->first();
+        $documentosHabilitantes = DocumentosHabilitantes::where('control_previo_id',$id)->first();
+        $resumenRemesa = ResumenRemesa::where('control_previo_id',$id)->first();
+        $liquidacionEconomica = LiquidacionEconomica::where('control_previo_id',$id)->first();
+        $tiposFormato = TipoFormato::get(["nombre", "id"])->pluck('nombre','id');;
 
-        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::get(["nombre", "id"]);
-        $estructurasFormatoPago = EstructuraFormatoPago::get(["nombre", "id"]);
-        $tiposFormato = TipoFormato::get(["nombre", "id"]);
-        $documentosHabilitantes = DocumentosHabilitantes::get(["nombre", "id"]);
-        $formatosPago = FormatoPago::get(["nombre", "id"]);
-        $responsables = Admin::get(["name", "id"])->pluck('name','id');
+        $servidoresPublicos = Admin::get(["name", "id"]);
 
         return view('backend.pages.controlesPrevios.edit', [
             'controlPrevio' => $controlPrevio,
-            'estructurasDocumentosHabilitantes' => $estructurasDocumentosHabilitantes,
-            'estructurasFormatoPago' => $estructurasFormatoPago,
+            'formatoPago' => $formatoPago->datos,
+            'documentosHabilitantes' => $documentosHabilitantes->datos,
+            'resumenRemesa' => $resumenRemesa->datos,
+            'liquidacionEconomica' => $liquidacionEconomica->datos,
             'tiposFormato' => $tiposFormato,
-            'documentosHabilitantes' => $documentosHabilitantes,
-            'formatosPago' => $formatosPago,
-            'responsables' => $responsables,
-            'roles' => Role::all(),
+            'servidoresPublicos' => $servidoresPublicos
         ]);
     }
 
@@ -164,20 +164,51 @@ class ControlesPreviosController extends Controller
 
         $creado_por_id = Auth::id();
 
-        //Guarda el expediente
+        //Guarda el Control Previo
         $controlPrevio = ControlPrevio::findOrFail($id);
-        $controlPrevio->victima = $request->victima;
-        $controlPrevio->id_de_proteccion = $request->id_de_proteccion;
-        $controlPrevio->proteccion_id = $request->proteccion_id;
-        $controlPrevio->peticionario_notificado = $request->peticionario_notificado;
-        $controlPrevio->nro_oficio_notificacion = $request->nro_oficio_notificacion;
-        $controlPrevio->documentacion_solicitada = $request->documentacion_solicitada;
-        $controlPrevio->tipo_respuesta_id = $request->tipo_respuesta_id;
-        $controlPrevio->observaciones = $request->observaciones;
-        $controlPrevio->estado_id = $request->estado_id;
-        $controlPrevio->semaforo_id = 1;
-        $controlPrevio->creado_por_id = $creado_por_id;
+        $controlPrevio->tipo_formato_id = $request->tipo_formato_id;
+        $controlPrevio->nro_control_previo_y_concurrente = $request->nro_control_previo_y_concurrente;
+        $controlPrevio->fecha_tramite = $request->fecha_tramite;
+        $controlPrevio->solicitud_pago = $request->solicitud_pago;
+        $controlPrevio->objeto = $request->objeto;
+        $controlPrevio->beneficiario = $request->beneficiario;
+        $controlPrevio->ruc = $request->ruc;
+        $controlPrevio->mes = $request->mes;
+        $controlPrevio->valor = $request->valor;
+        //$controlPrevio->creado_por_id = $creado_por_id;
         $controlPrevio->save();
+
+        $estructurasFormatoPago = EstructuraFormatoPago::where('tipo_formato_id',$controlPrevio->tipo_formato_id)->first();
+
+        $fp = FormatoPago::where('control_previo_id',$id)->first();
+        $fp->control_previo_id = $controlPrevio->id;
+        $fp->estructura_formato_pago_id = $estructurasFormatoPago->id;
+        $fp->datos = json_decode($request->forma_pago, true);
+        $fp->save();
+
+        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::where('tipo_formato_id',$controlPrevio->tipo_formato_id)->first();
+
+        $dh = DocumentosHabilitantes::where('control_previo_id',$id)->first();
+        $dh->control_previo_id = $controlPrevio->id;
+        $dh->esctructura_docu_habi_id = $estructurasDocumentosHabilitantes->id;
+        $dh->datos = json_decode($request->documentos_habilitantes, true);
+        $dh->save();
+
+        $estructurasResumenRemesa = EstructuraResumenRemesa::where('tipo_formato_id',$controlPrevio->tipo_formato_id)->first();
+
+        $rr = ResumenRemesa::where('control_previo_id',$id)->first();
+        $rr->control_previo_id = $controlPrevio->id;
+        $rr->esctructura_resumen_remesa_id = $estructurasResumenRemesa->id;
+        $rr->datos = json_decode($request->resumen_remesa, true);
+        $rr->save();
+
+        $estructurasLiquidacionEconomica = EstructuraLiquidacionEconomica::where('tipo_formato_id',$controlPrevio->tipo_formato_id)->first();
+
+        $le = LiquidacionEconomica::where('control_previo_id',$id)->first();
+        $le->control_previo_id = $controlPrevio->id;
+        $le->esctructura_liq_eco_id = $estructurasLiquidacionEconomica->id;
+        $le->datos = json_decode($request->liquidacion_economica, true);
+        $le->save();
 
         session()->flash('success', 'Control Previo ha sido actualizado satisfactoriamente.');
         return redirect()->route('admin.controlesPrevios.index');
@@ -222,52 +253,49 @@ class ControlesPreviosController extends Controller
         return response()->json($data);
     }
 
-    public function getExpedientesByFilters(Request $request): JsonResponse
+    public function getControlesPreviosByFilters(Request $request): JsonResponse
     {
-        $this->checkAuthorization(auth()->user(), ['expediente.view']);
+        $this->checkAuthorization(auth()->user(), ['controlPrevio.view']);
 
         $controlesPrevios = ControlPrevio::where('id',">",0);
 
-        $filtroVictimaSearch = $request->victima_search;
-        $filtroIdDeProteccionSearch = $request->id_de_proteccion_search;
-        $filtroProteccionIdSearch = json_decode($request->proteccion_id_search, true);
-        
-        
-        if(isset($filtroVictimaSearch) && !empty($filtroVictimaSearch)){
-            $controlesPrevios = $controlesPrevios->where('victima', 'like', '%'.$filtroVictimaSearch.'%');
+        $filtroTipoFormatoIdSearch = json_decode($request->tipo_formato_id_search, true);
+        $filtroNroControlPrevioConcurrenteSearch = $request->nro_control_previo_y_concurrente_search;
+        $filtroFechaTramiteSearch = $request->fecha_tramite_search;
+        $filtroSolicitudPagoSearch = $request->solicitud_pago_search;
+        $filtroObjetoSearch = $request->objeto_search;
+        $filtroBeneficiarioSearch = $request->beneficiario_search;
+        $filtroRucSearch = $request->ruc_search;
+        $filtroMesSearch = $request->mes_search;
+        $filtroValorSearch = $request->valor_search;
+        $filtroCreadoPorIdSearch = json_decode($request->creado_por_id_search, true);
+
+        if(isset($filtroTipoFormatoIdSearch) && !empty($filtroTipoFormatoIdSearch)){
+            $controlesPrevios = $controlesPrevios->whereIn('tipo_formato_id', $filtroTipoFormatoIdSearch);
         }
-        if(isset($filtroIdDeProteccionSearch) && !empty($filtroIdDeProteccionSearch)){
-            $controlesPrevios = $controlesPrevios->where('id_de_proteccion', 'like', '%'.$filtroIdDeProteccionSearch.'%');
+        if(isset($filtroNroControlPrevioConcurrenteSearch) && !empty($filtroNroControlPrevioConcurrenteSearch)){
+            $controlesPrevios = $controlesPrevios->where('nro_control_previo_y_concurrente', 'like', '%'.$filtroNroControlPrevioConcurrenteSearch.'%');
         }
-        if(isset($filtroProteccionIdSearch) && !empty($filtroProteccionIdSearch)){
-            $controlesPrevios = $controlesPrevios->whereIn('proteccion_id', $filtroProteccionIdSearch);
+        if(isset($filtroFechaTramiteSearch) && !empty($filtroFechaTramiteSearch)){
+            $controlesPrevios = $controlesPrevios->where('fecha_tramite', 'like', '%'.$filtroFechaTramiteSearch.'%');
         }
-        if(isset($filtroPeticionarioNotificadoSearch) && !empty($filtroPeticionarioNotificadoSearch)){
-            $controlesPrevios = $controlesPrevios->where('peticionario_notificado', 'like', '%'.$filtroPeticionarioNotificadoSearch.'%');
+        if(isset($filtroSolicitudPagoSearch) && !empty($filtroSolicitudPagoSearch)){
+            $controlesPrevios = $controlesPrevios->where('solicitud_pago', 'like', '%'.$filtroSolicitudPagoSearch.'%');
         }
-        if(isset($filtroNroOficioNotificacionSearch) && !empty($filtroNroOficioNotificacionSearch)){
-            $controlesPrevios = $controlesPrevios->where('nro_oficio_notificacion', 'like', '%'.$filtroNroOficioNotificacionSearch.'%');
+        if(isset($filtroObjetoSearch) && !empty($filtroObjetoSearch)){
+            $controlesPrevios = $controlesPrevios->where('objeto', 'like', '%'.$filtroObjetoSearch.'%');
         }
-        if(isset($filtroFechaNotificacionSearch) && !empty($filtroFechaNotificacionSearch)){
-            $controlesPrevios = $controlesPrevios->where('fecha_notificacion', 'like', '%'.$filtroFechaNotificacionSearch.'%');
+        if(isset($filtroBeneficiarioSearch) && !empty($filtroBeneficiarioSearch)){
+            $controlesPrevios = $controlesPrevios->where('beneficiario', 'like', '%'.$filtroBeneficiarioSearch.'%');
         }
-        if(isset($filtroResponsablesIdsSearch) && !empty($filtroResponsablesIdsSearch)){
-            $controlesPrevios = $controlesPrevios->whereIn('responsables_ids', $filtroResponsablesIdsSearch);
+        if(isset($filtroRucSearch) && !empty($filtroRucSearch)){
+            $controlesPrevios = $controlesPrevios->where('ruc', 'like', '%'.$filtroRucSearch.'%');
         }
-        if(isset($filtroFechaMaximaRespuestaSearch) && !empty($filtroFechaMaximaRespuestaSearch)){
-            $controlesPrevios = $controlesPrevios->where('fecha_maxima_respuesta', 'like', '%'.$filtroFechaMaximaRespuestaSearch.'%');
+        if(isset($filtroMesSearch) && !empty($filtroMesSearch)){
+            $controlesPrevios = $controlesPrevios->where('mes', 'like', '%'.$filtroMesSearch.'%');
         }
-        if(isset($filtroDocumentacionSolicitadaSearch) && !empty($filtroDocumentacionSolicitadaSearch)){
-            $controlesPrevios = $controlesPrevios->where('documentacion_solicitada', 'like', '%'.$filtroDocumentacionSolicitadaSearch.'%');
-        }
-        if(isset($filtroObservacionesSearch) && !empty($filtroObservacionesSearch)){
-            $controlesPrevios = $controlesPrevios->where('observaciones', 'like', '%'.$filtroObservacionesSearch.'%');
-        }
-        if(isset($filtroTipoRespuestaIdSearch) && !empty($filtroTipoRespuestaIdSearch)){
-            $controlesPrevios = $controlesPrevios->whereIn('proteccion_id', $filtroTipoRespuestaIdSearch);
-        }
-        if(isset($filtroEstadoIdSearch) && !empty($filtroEstadoIdSearch)){
-            $controlesPrevios = $controlesPrevios->whereIn('estado_id', $filtroEstadoIdSearch);
+        if(isset($filtroValorSearch) && !empty($filtroValorSearch)){
+            $controlesPrevios = $controlesPrevios->where('valor', 'like', '%'.$filtroValorSearch.'%');
         }
         if(isset($filtroCreadoPorIdSearch) && !empty($filtroCreadoPorIdSearch)){
             $controlesPrevios = $controlesPrevios->whereIn('creado_por_id', $filtroCreadoPorIdSearch);
@@ -275,45 +303,42 @@ class ControlesPreviosController extends Controller
         
         $controlesPrevios = $controlesPrevios->orderBy('id', 'desc')->get();
 
-        $estructurasDocumentosHabilitantes = EstructuraDocumentosHabilitantes::get(["nombre", "id"]);
-        $estructurasFormatoPago = EstructuraFormatoPago::get(["nombre", "id"]);
+        $controlesPreviosIds = $controlesPrevios->pluck('id');
+
+        $formatosPago = FormatoPago::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $documentosHabilitantes = DocumentosHabilitantes::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $resumenesRemesa = ResumenRemesa::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $liquidacionesEconomicas = LiquidacionEconomica::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
         $tiposFormato = TipoFormato::get(["nombre", "id"]);
-        $documentosHabilitantes = DocumentosHabilitantes::get(["nombre", "id"]);
-        $formatosPago = FormatoPago::get(["nombre", "id"]);
-        $responsables = Admin::all();
-
-        $estructuras_documentos_habilitantes_temp = [];
-        foreach($estructurasDocumentosHabilitantes as $proteccion){
-            $estructuras_documentos_habilitantes_temp[$proteccion->id] = $proteccion->nombre;
-        }
         
-        $responsables_temp = [];
-        foreach($responsables as $responsable){
-            $responsables_temp[$responsable->id] = $responsable->name;
+        $servidoresPublicos = Admin::all();
+        
+        $creado_por_temp = [];
+        foreach($servidoresPublicos as $sp){
+            $creado_por_temp[$sp->id] = $sp->name;
         }
 
-        $creado_por_temp = [];
-        foreach($responsables as $responsable){
-            $creado_por_temp[$responsable->id] = $responsable->name;
+        $tipo_formato_temp = [];
+        foreach($tiposFormato as $tipoFormato){
+            $tipo_formato_temp[$tipoFormato->id] = $tipoFormato->nombre;
         }
 
         $responsable_id = Auth::id();
 
         foreach($controlesPrevios as $controlPrevio){
-            $controlPrevio->proteccion_nombre = array_key_exists($controlPrevio->proteccion_id, $estructuras_documentos_habilitantes_temp) ? $estructuras_documentos_habilitantes_temp[$controlPrevio->proteccion_id] : "";
-            $controlPrevio->responsable_nombre = array_key_exists($controlPrevio->responsable_id, $responsables_temp) ? $responsables_temp[$controlPrevio->responsable_id] : "";
-            $controlPrevio->creado_por_nombre = array_key_exists($controlPrevio->creado_por_id, $responsables_temp) ? $responsables_temp[$controlPrevio->creado_por_id] : "";
+            $controlPrevio->tipo_formato_nombre = array_key_exists($controlPrevio->tipo_formato_id, $tipo_formato_temp) ? $tipo_formato_temp[$controlPrevio->tipo_formato_id] : "";
+            $controlPrevio->creado_por_nombre = array_key_exists($controlPrevio->creado_por_id, $creado_por_temp) ? $creado_por_temp[$controlPrevio->creado_por_id] : "";
             $controlPrevio->esCreadorRegistro = $responsable_id == $controlPrevio->creado_por_id ? true : false;
-            
         }
 
         $data['controlesPrevios'] = $controlesPrevios;
-        $data['estructurasDocumentosHabilitantes'] = $estructurasDocumentosHabilitantes;
-        $data['estructurasFormatoPago'] = $estructurasFormatoPago;
+        $data['controlesPreviosIds'] = $controlesPreviosIds;
         $data['tiposFormato'] = $tiposFormato;
-        $data['documentosHabilitantes'] = $documentosHabilitantes;
         $data['formatosPago'] = $formatosPago;
-        $data['responsables'] = $responsables;
+        $data['documentosHabilitantes'] = $documentosHabilitantes;
+        $data['resumenesRemesa'] = $resumenesRemesa;
+        $data['liquidacionesEconomicas'] = $liquidacionesEconomicas;
+        $data['servidoresPublicos'] = $servidoresPublicos;
         $data['roles'] = Role::all();
   
         return response()->json($data);

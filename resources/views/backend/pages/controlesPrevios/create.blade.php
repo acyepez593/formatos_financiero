@@ -140,15 +140,6 @@ Crear Control Previo - Admin Panel
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
-                                <label for="servidor_publico">Servidor Público</label>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control @error('servidor_publico') is-invalid @enderror" id="servidor_publico" name="servidor_publico" placeholder="" value="{{ old('servidor_publico') }}" maxlength="1000" required>
-                                    @error('servidor_publico')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6 col-sm-12">
                                 <label for="tipo_formato_id">Seleccione un Formato:</label>
                                 <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true">
                                     @foreach ($tiposFormato as $key => $value)
@@ -263,6 +254,7 @@ Crear Control Previo - Admin Panel
     let tableRefDocH = "";
     let tableFotter = "";
     let tableHeaderRef = "";
+    let tableHeaderRefDocHab = "";
     let tableHeaderRefLiqEco = "";
     let primerReg = false;
     let estructurasFormatoPago = [];
@@ -335,6 +327,8 @@ Crear Control Previo - Admin Panel
                     let header = "";
                     let innerHTML = "";
                     let htmlDelete = "";
+                    let headerDocumentosHabilitantes = "";
+                    let innerHTMLDocumentosHabilitantes = "";
                     let headerLiqEco = "";
                     let innerHTMLLiqEco = "";
 
@@ -353,6 +347,14 @@ Crear Control Previo - Admin Panel
                     tableRef = document.getElementById('dataTableFormaPago').getElementsByTagName('tbody')[0];
 
                     //Documentos Habilitantes
+                    if(estructurasDocumentosHabilitantes.mostrarHeader){
+                        tableHeaderRefDocHab = document.getElementById('dataTableDocumentosHabilitantes').getElementsByTagName('thead')[0];
+                        for (let estructuraDocumentosHabilitantes of estructurasDocumentosHabilitantes.estructura) {
+                            headerDocumentosHabilitantes += "<th>" + estructuraDocumentosHabilitantes.texto + "</th>";
+                        }
+                        tableHeaderRefDocHab.insertRow().innerHTML = headerDocumentosHabilitantes;
+                    }
+                    
                     addRowDocumentosHabilitantes(estructurasDocumentosHabilitantes);
 
                     //Resumen Remesa
@@ -509,7 +511,7 @@ Crear Control Previo - Admin Panel
         for(let e of estructurasResumenRemesa){
             innerHTML += 
             '<div class="form-group col-md-6 col-sm-12">'+
-            '<label for="ruc">' + e.texto + '</label>'+
+            '<label for="' + e.campo_id + '">' + e.texto + '</label>'+
                 '<div class="input-group mb-3">'+
                     addFieldResumenRemesa(e)+
                 '</div>'+
@@ -626,7 +628,7 @@ Crear Control Previo - Admin Panel
             let jsonObj = {};
             let column = 0;
             
-            jsonObj[headerDocumentosHabilitantes[rowDocumentosHabilitantes]] = "";
+            jsonObj[headerDocumentosHabilitantes[column]] = "";
             $(this).find('td').each(function(){
                 if(headerDocumentosHabilitantes[column] !== undefined){
                     if(column == 0){
@@ -638,7 +640,7 @@ Crear Control Previo - Admin Panel
                 column ++;
             })
             jsonArrObjDocumentosHabilitantes.push(jsonObj);
-            rowDocumentosHabilitantes ++;
+            //rowDocumentosHabilitantes ++;
         })
         documentosHabilitantes = jsonArrObjDocumentosHabilitantes;
         console.log(documentosHabilitantes);

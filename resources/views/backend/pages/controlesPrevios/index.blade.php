@@ -174,10 +174,10 @@
 
                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                 <div class="card-body">
-                                    <h4 class="header-title float-left">{{ __('Expedientes') }}</h4>
+                                    <h4 class="header-title float-left">{{ __('Controles Previos') }}</h4>
                                     <p class="float-right mb-2" style="padding: 5px;">
-                                        @if (auth()->user()->can('expediente.create'))
-                                            <a class="btn btn-primary text-white" href="{{ route('admin.expedientes.create') }}">
+                                        @if (auth()->user()->can('controlPrevio.create'))
+                                            <a class="btn btn-primary text-white" href="{{ route('admin.controlesPrevios.create') }}">
                                                 {{ __('Crear Nuevo') }}
                                             </a>
                                         @endif
@@ -240,12 +240,13 @@
         };
         let tableRef = "";
         let tableHeaderRef = "";
-        let expedientes = [];
-        let protecciones = [];
-        let estados = [];
-        let tiposRespuesta = [];
-        let semaforos = [];
-        let responsables = [];
+        let controlesPrevios = [];
+        let tiposFormato = [];
+        let formatosPago = [];
+        let documentosHabilitantes = [];
+        let resumenesRemesa = [];
+        let liquidacionesEconomicas = [];
+        let servidoresPublicos = [];
 
         $(document).ready(function() {
 
@@ -282,7 +283,7 @@
                     tipo_formato_id_search: JSON.stringify($('#tipo_formato_id_search').val()),
                     nro_control_previo_y_concurrente_search: $('#nro_control_previo_y_concurrente_search').val(),
                     fecha_tramite_search: $('#fecha_tramite_search').val(),
-                    solicitud_pago_search: JSON.stringify($('#solicitud_pago_search').val()),
+                    solicitud_pago_search: $('#solicitud_pago_search').val(),
                     objeto_search: $('#objeto_search').val(),
                     beneficiario_search: $('#beneficiario_search').val(),
                     ruc_search: $('#ruc_search').val(),
@@ -298,17 +299,18 @@
                     $("#collapseTwo").collapse('show');
 
                     controlesPrevios = response.controlesPrevios;
-                    protecciones = response.protecciones;
-                    estados = response.estados;
-                    tiposRespuesta = response.tiposRespuesta;
-                    semaforos = response.semaforos;
-                    responsables = response.responsables;
+                    tiposFormato = response.tiposFormato;
+                    formatosPago = response.formatosPago;
+                    documentosHabilitantes = response.documentosHabilitantes;
+                    resumenesRemesa = response.resumenesRemesa;
+                    liquidacionesEconomicas = response.liquidacionesEconomicas;
 
                     dataTableData.totalRegistros = 0;
 
                     tableHeaderRef = document.getElementById('dataTable').getElementsByTagName('thead')[0];
 
                     tableHeaderRef.insertRow().innerHTML = 
+                        "<th>#</th>"+
                         "<th>Tipo Formato</th>"+    
                         "<th># Control Previo</th>"+
                         "<th>Fecha Trámite</th>"+
@@ -325,7 +327,7 @@
 
                     let contador = 1;
                     let meses = [{"id":"01","nombre":"Enero"},{"id":"02","nombre":"Febrero"},{"id":"03","nombre":"Marzo"},{"id":"04","nombre":"Abril"},{"id":"05","nombre":"Mayo"},{"id":"06","nombre":"Junio"},{"id":"07","nombre":"Julio"},{"id":"08","nombre":"Agosto"},{"id":"09","nombre":"Septiembre"},{"id":"10","nombre":"Octubre"},{"id":"11","nombre":"Noviembre"},{"id":"12","nombre":"Diciembre"}];
-                    for (let registro of registros) {
+                    for (let registro of controlesPrevios) {
                         
                         let rutaEdit = "{{url()->current()}}"+"/"+registro.id+"/edit";
                         let rutaDelete = "{{url()->current()}}"+"/"+registro.id;
@@ -335,24 +337,20 @@
                         let htmlDelete = "";
                         let mes = "";
                         let anio = "";
-                        htmlEdit +=@if (auth()->user()->can('registro.edit')) '<a class="btn btn-success text-white" href="'+rutaEdit+'">Editar</a>' @else '' @endif;
-                        htmlDelete += @if (auth()->user()->can('registro.delete')) '<a class="btn btn-danger text-white" href="javascript:void(0);" onclick="event.preventDefault(); deleteDialog('+expediente.id+')">Borrar</a> <form id="delete-form-'+expediente.id+'" action="'+rutaDelete+'" method="POST" style="display: none;">@method('DELETE')@csrf</form>' @else '' @endif;
+                        htmlEdit +=@if (auth()->user()->can('controlPrevio.edit')) '<a class="btn btn-success text-white" href="'+rutaEdit+'">Editar</a>' @else '' @endif;
+                        htmlDelete += @if (auth()->user()->can('controlPrevio.delete')) '<a class="btn btn-danger text-white" href="javascript:void(0);" onclick="event.preventDefault(); deleteDialog('+registro.id+')">Borrar</a> <form id="delete-form-'+registro.id+'" action="'+rutaDelete+'" method="POST" style="display: none;">@method('DELETE')@csrf</form>' @else '' @endif;
 
                         innerHTML += 
                             "<td>"+ contador+ "</td>"+
-                            "<td>"+ registro.victima+ "</td>"+
-                            "<td>"+ registro.id_de_proteccion+ "</td>"+
-                            "<td>"+ registro.proteccion_nombre+ "</td>"+
-                            "<td>"+ registro.peticionario_notificado+ "</td>"+
-                            "<td>"+ registro.nro_oficio_notificacion+ "</td>"+
-                            "<td>"+ registro.fecha_notificacion+ "</td>"+
-                            "<td>"+ registro.responsables_nombres+ "</td>"+
-                            "<td>"+ registro.fecha_maxima_respuesta+ "</td>"+
-                            "<td>"+ registro.documentacion_solicitada+ "</td>"+
-                            "<td>"+ registro.observaciones+ "</td>"+
-                            "<td>"+ registro.tipo_respuesta_nombre+ "</td>"+
-                            "<td>"+ registro.estado_nombre+ "</td>"+
-                            "<td>"+ registro.semaforo_estado+ "</td>"+
+                            "<td>"+ registro.tipo_formato_nombre+ "</td>"+
+                            "<td>"+ registro.nro_control_previo_y_concurrente+ "</td>"+
+                            "<td>"+ registro.fecha_tramite+ "</td>"+
+                            "<td>"+ registro.solicitud_pago+ "</td>"+
+                            "<td>"+ registro.objeto+ "</td>"+
+                            "<td>"+ registro.beneficiario+ "</td>"+
+                            "<td>"+ registro.ruc+ "</td>"+
+                            "<td>"+ registro.mes+ "</td>"+
+                            "<td>"+ registro.valor+ "</td>"+
                             "<td>"+ registro.creado_por_nombre+ "</td>";
                             if(registro.esCreadorRegistro){
                                 innerHTML +="<td>" + htmlEdit + htmlDelete + "</td>";
@@ -361,11 +359,6 @@
                             }
 
                             tableRef.insertRow().innerHTML = innerHTML;
-                            let semaforo = semaforos.find(semaforo => semaforo.id === expediente.semaforo_id);
-                            if(semaforo){
-                                tableRef.children[contador-1].style.backgroundColor = semaforo.color;
-                            }
-                            
                             contador += 1;
                     }
                     
@@ -427,7 +420,7 @@
                             },
                             dataType: 'json',
                             success: function (response) {
-                                $( "#buscarExpedientes" ).trigger( "click" );
+                                $( "#buscarControlesPrevios" ).trigger( "click" );
                             }
                         });
                     },

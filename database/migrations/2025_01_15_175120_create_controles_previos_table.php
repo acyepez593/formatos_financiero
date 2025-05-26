@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('controles_previos', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('tipo_formato_id');
+            $table->index('tipo_formato_id');
             $table->string('nro_control_previo_y_concurrente');
             $table->index('nro_control_previo_y_concurrente');
             $table->date('fecha_tramite');

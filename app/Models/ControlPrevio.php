@@ -22,6 +22,7 @@ class ControlPrevio extends Authenticatable
     protected $guard_name = 'controles_previos';
   
     protected $fillable = [
+        'tipo_formato_id',
         'nro_control_previo_y_concurrente',
         'fecha_tramite',
         'solicitud_pago',

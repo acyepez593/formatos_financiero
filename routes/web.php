@@ -39,11 +39,11 @@ Auth::routes();
 
 Route::get('/', 'HomeController@redirectAdmin')->name('index');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::post('/getReporteByNumeroCaja','backend\ReportesController@getReporteByNumeroCaja')->middleware('auth:admin');
-
 
 Route::post('/getControlesPreviosByFilters','backend\ControlesPreviosController@getControlesPreviosByFilters')->middleware('auth:admin');
 Route::post('/getFormatoByTipoFormato','backend\ControlesPreviosController@getFormatoByTipoFormato')->middleware('auth:admin');
+Route::post('/getControlesPreviosByTipoFormato','backend\ReportesController@getControlesPreviosByTipoFormato')->middleware('auth:admin');
+Route::post('/generarReporteById','backend\ReportesController@generarReporteById')->middleware('auth:admin');
 
 /**
  * Admin routes

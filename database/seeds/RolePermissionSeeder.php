@@ -154,11 +154,19 @@ class RolePermissionSeeder extends Seeder
                 ]
             ],
             [
-                'group_name' => 'reporte',
+                'group_name' => 'reporteControlPrevio',
                 'permissions' => [
                     // reporte Permissions
-                    'reporte.view',
-                    'reporte.download',
+                    'reporteControlPrevio.view',
+                    'reporteControlPrevio.download',
+                ]
+            ],
+            [
+                'group_name' => 'reporteSeguimientoControlPrevio',
+                'permissions' => [
+                    // reporte Permissions
+                    'reporteSeguimientoControlPrevio.view',
+                    'reporteSeguimientoControlPrevio.download',
                 ]
             ],
         ];

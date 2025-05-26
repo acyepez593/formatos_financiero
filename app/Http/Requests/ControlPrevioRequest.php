@@ -24,6 +24,7 @@ class ControlPrevioRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'tipo_formato_id' => 'required',
             'nro_control_previo_y_concurrente' => 'required|max:30',
             'fecha_tramite' => 'required',
             'solicitud_pago' => 'required|max:100',
@@ -44,6 +45,7 @@ class ControlPrevioRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'tipo_formato_id' => 'El campo :attribute es requerido',
             'nro_control_previo_y_concurrente.required' => 'El campo :attribute es requerido',
             'nro_control_previo_y_concurrente.max' => 'La longitud máxima del campo :attribute es :max caracteres',
             'fecha_tramite.required' => 'El campo :attribute es requerido',

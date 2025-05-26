@@ -177,16 +177,16 @@
                     </li>
                     @endif
 
-                    @if ($usr->can('reporte.view') || $usr->can('reporteTramites.view'))
+                    @if ($usr->can('reporteControlPrevio.view'))
                     <li>
                         <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-download"></i><span>
                             Reportes
                         </span></a>
                         <ul class="collapse {{ Route::is('admin.oficios.index') || Route::is('admin.rezagados.index') || Route::is('admin.rezagadosLevantamientoObjeciones.index') || Route::is('admin.extemporaneos.index') ? 'in' : '' }}">
-                            @if ($usr->can('reporte.view'))
-                                <li class="{{ Route::is('admin.reportes.index')  ? 'active' : '' }}"><a href="{{ route('admin.reportes.index') }}">Reporte Etiquetado Caja</a></li>
+                            @if ($usr->can('reporteControlPrevio.view'))
+                                <li class="{{ Route::is('admin.reportes.index')  ? 'active' : '' }}"><a href="{{ route('admin.reportes.index') }}">Reporte Control Previo</a></li>
                             @endif
-                            @if ($usr->can('reporteTramites.view'))
+                            @if ($usr->can('reporteControlPrevio.view'))
                                 <li class="{{ Route::is('admin.reportes.create')  ? 'active' : '' }}"><a href="{{ route('admin.reportes.create') }}">Generar Reporte</a></li>
                             @endif
                         </ul>

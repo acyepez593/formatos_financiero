@@ -81,91 +81,42 @@
                     <div class="clearfix"></div>
                     @include('backend.layouts.partials.messages')
                     <div class="col-md-12">
-                        <form action="" method="POST" id="reporteCajas">
+                        <form action="" method="POST" id="reporteControlPrevio">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-6 col-sm-12">
-                                    <label for="tipo_reporte">Seleccione una Tipo de Reporte:</label>
-                                    <select id="tipo_reporte" name="tipo_reporte" class="form-control selectpicker" data-live-search="true" required>
-                                        <option value="">Seleccione una Tipo de Reporte</option>
-                                        @foreach ($tiposReporte as $key => $value)
-                                            <option value="{{ $value['id'] }}" {{ $value['id'] == 'oficio' ? 'selected' : '' }}>{{ $value['name'] }}</option>
+                                    <label for="tipo_formato_id">Seleccione un Tipo de Formato:</label>
+                                    <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker" data-live-search="true" required>
+                                        @foreach ($tiposFormato as $key => $value)
+                                            <option value="{{ $value->id }}">{{ $value->nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6 col-sm-12">
-                                    <label for="numero_caja">Número Caja</label>
-                                    <input type="text" class="form-control @error('numero_caja') is-invalid @enderror" id="numero_caja" name="numero_caja" placeholder="Número Caja" required autofocus value="{{ old('numero_caja') }}">
-                                    @error('numero_caja')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6 col-sm-12">
-                                    <label for="etiqueta">Etiqueta</label>
-                                    <input type="text" class="form-control @error('etiqueta') is-invalid @enderror" id="etiqueta" name="etiqueta" placeholder="Etiqueta" required value="{{ old('etiqueta') }}">
-                                    @error('etiqueta')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                    <label for="nro_control_previo_y_concurrente">Seleccione un Control Previo:</label>
+                                    <select id="nro_control_previo_y_concurrente" name="nro_control_previo_y_concurrente" class="form-control selectpicker" data-live-search="true" required>
+                                        
+                                    </select>
+                                    
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-2">
+                                <!--<div class="col-sm-2">
                                     <button id="consutarReporte" type="button" class="btn btn-primary mt-4 pr-4 pl-4">Consultar</button>
-                                </div>
-                                @if (auth()->user()->can('reporte.download'))
+                                </div>-->
+                                @if (auth()->user()->can('reporteControlPrevio.download'))
                                 <div class="col-sm-2">
                                     <button id="generarReporte" type="button" class="btn btn-success mt-4 pr-4 pl-4">Generar Reporte</button>
                                 </div>
                                 @endif
                             </div>
                         
-                    </p>
                         </form>
                     </div>
-                    <p></p>
-                    <div class="data-tables" style="margin-top: 15px;">
-                        <div class="col-6 mt-6">
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr>
-                                        <td><b>Total Registros</b></td>
-                                        <td id="totalRegistros"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total Número de Casos</b></td>
-                                        <td id="totalNumCasos"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total Monto Planilla</b></td>
-                                        <td id="totalMontoPlanilla"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    
                     <div class="clearfix"></div>
-                    <div class="col-md-12">
-                        <div class="data-tables" style="width:100%; margin-top: 20px;">
-                            <table id="dataTable" class="text-center">
-                                <thead class="bg-light text-capitalize">
-                                    <tr>
-                                        <th style="width: 20%;">{{ __('Razón Social') }}</th>
-                                        <th style="width: 15%;">{{ __('Ruc') }}</th>
-                                        <th style="width: 10%;">{{ __('Fecha Recepción') }}</th>
-                                        <th style="width: 15%;">{{ __('Tipo de Atención') }}</th>
-                                        <th style="width: 10%;">{{ __('Mes y Año del Servicio') }}</th>
-                                        <th style="width: 15%;">{{ __('Número de Casos') }}</th>
-                                        <th style="width: 15%;">{{ __('Monto Planilla') }}</th>
-                                    </tr>
-                                </thead>
-                                
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -191,21 +142,35 @@
      
      <script>
         let table = [];
-        let dataTableData = {
-            totalRegistros : 0,
-            totalNumCasos : 0,
-            totalMontoPlanilla : 0
-        };
 
         $(document).ready(function() {
             let table = [];
 
-            $('#numero_caja, #etiqueta').on('keyup', function () {
-                this.value = this.value.toUpperCase();
+            $('#tipo_formato_id').on('change', function () {
+                let tipo_formato_id = this.value;
+                $("#nro_control_previo_y_concurrente").html('');
+                $.ajax({
+                    url: "{{url('/getControlesPreviosByTipoFormato')}}",
+                    type: "POST",
+                    data: {
+                        tipo_formato_id: tipo_formato_id,
+                        _token: '{{csrf_token()}}'
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        console.log(response);
+                        $('#nro_control_previo_y_concurrente').html('<option value="">Seleccione un Control Previo:</option>');
+                        $.each(response.controlesPreviosByTipoFormato, function (key, value) {
+                            $("#nro_control_previo_y_concurrente").append('<option value="' + value
+                                .id + '">' + value.nro_control_previo_y_concurrente + '</option>');
+                        });
+                        $('#nro_control_previo_y_concurrente.selectpicker').selectpicker('refresh');
+                    }
+                });
             });
 
             $( "#consutarReporte" ).on( "click", function() {
-                if(document.getElementById('reporteCajas').reportValidity()){
+                if(document.getElementById('reporteControlPrevio').reportValidity()){
                     $("#overlay").fadeIn(300);
                     
                     $.ajax({
@@ -264,15 +229,14 @@
             }
 
             $( "#generarReporte" ).on( "click", function() {
-                if(document.getElementById('reporteCajas').reportValidity()){
+                if(document.getElementById('reporteControlPrevio').reportValidity()){
                     $("#overlay").fadeIn(300);
                     $.ajax({
-                        url: "{{url('/generarReporteByNumeroCaja')}}",
+                        url: "{{url('/generarReporteById')}}",
                         method: "POST",
                         data: {
-                            tipo_reporte: $('#tipo_reporte').val(),
-                            numero_caja: $('#numero_caja').val(),
-                            etiqueta: $('#etiqueta').val(),
+                            tipo_formato_id: $('#tipo_formato_id').val(),
+                            id_control_previo: $('#nro_control_previo_y_concurrente').val(),
                             _token: '{{csrf_token()}}'
                         },
                         xhrFields: {
@@ -284,7 +248,7 @@
                             var a = document.createElement('a');
                             var url = window.URL.createObjectURL(response);
                             a.href = url;
-                            a.download = 'test.xlsx';
+                            a.download = 'controlPrevio.xlsx';
                             document.body.append(a);
                             a.click();
                             a.remove();
@@ -293,6 +257,8 @@
                     });
                 }
             });
+
+            $('#tipo_formato_id').trigger('change');
 
         });
      </script>
