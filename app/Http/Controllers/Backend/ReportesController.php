@@ -103,7 +103,6 @@ class ReportesController extends Controller
 
             $columna = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
             $filaInicial = 3;
-            $fila = $filaInicial;
 
             $active_sheet->setCellValue('F3', !isset($controlPrevio->nro_control_previo_y_concurrente) || empty($controlPrevio->nro_control_previo_y_concurrente) ? "" : $controlPrevio->nro_control_previo_y_concurrente);
             $active_sheet->setCellValue('B4', !isset($controlPrevio->fecha_tramite) || empty($controlPrevio->fecha_tramite) ? "" : Carbon::createFromFormat('Y-m-d', $controlPrevio->fecha_tramite)->format('d/m/Y'));
@@ -116,20 +115,43 @@ class ReportesController extends Controller
             $active_sheet->setCellValue('B11', !isset($controlPrevio->valor) || empty($controlPrevio->valor) ? "" : $controlPrevio->valor);
             $active_sheet->getStyle('B4:B11')->getAlignment()->setHorizontal('left');
 
+            //Forma de pago
             $active_sheet->setCellValue('A12', 'FORMA DE PAGO');
             //Header Forma Pago
             $letraColumnaInicio = 1;
             $numColumnaInicio = 13;
-            foreach (json_decode($estructurasFormatoPago->estructura,true) as $efp) {
+            $filaActual = 13;
+            $estructurasFP = json_decode($estructurasFormatoPago->estructura,true);
+            $formatosP = $formatosPago->datos;
+            foreach ($estructurasFP as $efp) {
                 $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $efp['texto']);
+                $col = 14;
+                foreach ($formatosP as $fp) {
+                    $active_sheet->setCellValue($columna[$letraColumnaInicio].$col, $fp[$efp['campo_id']]);
+                    $col += 1;
+                }
                 $letraColumnaInicio += 1; 
             }
+            $filaActual += count($formatosP);
 
-            //Datos Forma Pago
-            /*foreach (json_decode($formatosPago->datos,true) as $fp) {
-                $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $fp['texto']);
+            //Documentos Habilitantes
+            $filaActual += 1;
+            $active_sheet->setCellValue('A'.$filaActual, 'DOCUMENTOS HABILITANTES');
+            $filaActual += 1;
+            //Header Documentos Habilitantes
+            $letraColumnaInicio = 1;
+            $numColumnaInicio = $filaActual;
+            $estructurasDH = json_decode($estructurasDocumentosHabilitantes->estructura,true);
+            $documentosH = $documentosHabilitantes->datos;
+            foreach ($estructurasDH['estructura'] as $edh) {
+                $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $edh['texto']);
+                $col = $numColumnaInicio;
+                foreach ($documentosH as $dh) {
+                    $active_sheet->setCellValue($columna[$letraColumnaInicio].$col, $dh[$edh['campo_id']]);
+                    $col += 1;
+                }
                 $letraColumnaInicio += 1; 
-            }*/
+            }
             
             //$active_sheet->getStyle($columna[0].$filaInicial.':'.$columna[17].$fila-1)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
 
