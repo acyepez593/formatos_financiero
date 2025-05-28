@@ -117,6 +117,10 @@ class ReportesController extends Controller
 
             //Forma de pago
             $active_sheet->setCellValue('A12', 'FORMA DE PAGO');
+            $active_sheet->mergeCells('A12:G12');
+            $active_sheet->getStyle('A12:G12')->getFont()->setBold(true)->setSize(12);
+            $active_sheet->getStyle('A12:G12')->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('A12:G12')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             //Header Forma Pago
             $letraColumnaInicio = 1;
             $numColumnaInicio = 13;
@@ -132,28 +136,208 @@ class ReportesController extends Controller
                 }
                 $letraColumnaInicio += 1; 
             }
+
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getFont()->setBold(true);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $filaActual += count($formatosP);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getFont()->setSize(10);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             //Documentos Habilitantes
             $filaActual += 1;
             $active_sheet->setCellValue('A'.$filaActual, 'DOCUMENTOS HABILITANTES');
+            $active_sheet->mergeCells('A'.$filaActual.':G'.$filaActual);
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(12);
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $filaActual += 1;
             //Header Documentos Habilitantes
-            $letraColumnaInicio = 1;
+            $letraColumnaInicio = 0;
             $numColumnaInicio = $filaActual;
             $estructurasDH = json_decode($estructurasDocumentosHabilitantes->estructura,true);
             $documentosH = $documentosHabilitantes->datos;
             foreach ($estructurasDH['estructura'] as $edh) {
-                $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $edh['texto']);
-                $col = $numColumnaInicio;
+                if($columna[$letraColumnaInicio] == 'A'){
+                    
+                    $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $edh['texto']);
+                    $col = $numColumnaInicio + 1;
+    
+                    $active_sheet->getStyle($columna[$letraColumnaInicio].$numColumnaInicio)->getFont()->setSize(10);
+                    $active_sheet->getStyle($columna[$letraColumnaInicio].$numColumnaInicio)->getFont()->setBold(true);
+                    $active_sheet->getStyle($columna[$letraColumnaInicio].$numColumnaInicio)->getAlignment()->setHorizontal('center')->setWrapText(true);
+
+                    $active_sheet->mergeCells('A'.$numColumnaInicio.':C'.$numColumnaInicio);
+                    $active_sheet->getStyle('A'.$numColumnaInicio.':C'.$numColumnaInicio)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    
+                }else{
+                    $active_sheet->setCellValue($columna[$letraColumnaInicio+2].$numColumnaInicio, $edh['texto']);
+                    $col = $numColumnaInicio + 1;
+    
+                    $active_sheet->getStyle($columna[$letraColumnaInicio+2].$numColumnaInicio)->getFont()->setSize(10);
+                    $active_sheet->getStyle($columna[$letraColumnaInicio+2].$numColumnaInicio)->getFont()->setBold(true);
+                    $active_sheet->getStyle($columna[$letraColumnaInicio+2].$numColumnaInicio)->getAlignment()->setHorizontal('center')->setWrapText(true);
+                    $active_sheet->getStyle($columna[$letraColumnaInicio+2].$numColumnaInicio)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                }
+
                 foreach ($documentosH as $dh) {
-                    $active_sheet->setCellValue($columna[$letraColumnaInicio].$col, $dh[$edh['campo_id']]);
+                    if($columna[$letraColumnaInicio] == 'A'){
+
+                        $active_sheet->setCellValue($columna[$letraColumnaInicio].$col, $dh[$edh['campo_id']]);
+                        $active_sheet->getStyle($columna[$letraColumnaInicio].$col)->getFont()->setSize(10);
+                        $active_sheet->getStyle($columna[$letraColumnaInicio].$col)->getAlignment()->setWrapText(true);
+
+                        $active_sheet->mergeCells('A'.$col.':C'.$col);
+                        $active_sheet->getStyle('A'.$col.':C'.$col)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+                        //Calculo de ancho requerido
+                        $largo = strlen($dh[$edh['campo_id']]);
+                        $calculoAncho = -1;
+                        if($largo >= 75){
+                            $calculoAncho = ceil(ceil($largo/75) * 15);
+                        }
+                        $active_sheet->getRowDimension($col)->setRowHeight($calculoAncho);
+
+                    }else{
+                        $active_sheet->setCellValue($columna[$letraColumnaInicio+2].$col, $dh[$edh['campo_id']]);
+                        $active_sheet->getStyle($columna[$letraColumnaInicio+2].$col)->getFont()->setSize(10);
+                        $active_sheet->getStyle($columna[$letraColumnaInicio+2].$col)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    }
+
                     $col += 1;
                 }
                 $letraColumnaInicio += 1; 
             }
+            $filaActual += count($documentosH);
+
+            //Resumen Remesa
+            $filaActual += 1;
+            $active_sheet->setCellValue('A'.$filaActual, 'RESUMEN REMESA');
+            $active_sheet->mergeCells('A'.$filaActual.':G'.$filaActual);
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(12);
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $filaActual += 1;
+            //Header Resumen Remesa
+            $letraColumnaInicio = 1;
+            $numColumnaInicio = $filaActual;
+            $estructurasRR = json_decode($estructurasResumenRemesa->estructura,true);
+            $resumenR = $resumenesRemesa->datos;
+            foreach ($estructurasRR as $err) {
+                $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $err['texto']);
+                $col = $numColumnaInicio + 1;
+
+                foreach ($resumenR as $rr) {
+                    $active_sheet->setCellValue($columna[$letraColumnaInicio].$col, $rr[$err['campo_id']]);
+                    $col += 1;
+                }
+                $letraColumnaInicio += 1;
+            }
             
-            //$active_sheet->getStyle($columna[0].$filaInicial.':'.$columna[17].$fila-1)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getFont()->setBold(true);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $filaActual += count($resumenR);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getFont()->setSize(10);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            //Liquidación Económica
+            $filaActual += 1;
+            $active_sheet->setCellValue('A'.$filaActual, 'LIQUIDACIÓN ECONÓMICA');
+            $active_sheet->mergeCells('A'.$filaActual.':G'.$filaActual);
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(12);
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('A'.$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $filaActual += 1;
+            //Header Liquidación Económica
+            $letraColumnaInicio = 1;
+            $numColumnaInicio = $filaActual;
+            $estructurasLE = json_decode($estructurasLiquidacionEconomica->estructura,true);
+            $liquidacionE = $liquidacionesEconomicas->datos;
+            foreach ($estructurasLE['estructura'] as $ele) {
+                $active_sheet->setCellValue($columna[$letraColumnaInicio].$numColumnaInicio, $ele['texto']);
+                $col = $numColumnaInicio + 1;
+                foreach ($liquidacionE as $le) {
+                    $active_sheet->setCellValue($columna[$letraColumnaInicio].$col, $le[$ele['campo_id']]);
+                    $col += 1;
+                }
+                $letraColumnaInicio += 1; 
+            }
+
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getFont()->setBold(true);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$numColumnaInicio)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $filaActual += count($liquidacionE);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getFont()->setSize(10);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+
+            //Footer
+            $filaActual += 1;
+            $letraColumnaInicio = 0;
+            $numColumnaInicio = $filaActual;
+            $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'Observaciones: ');
+            $active_sheet->mergeCells($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $filaActual += 1;
+
+            $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'SE REALIZA EL CONTROL PREVIO ');
+            $active_sheet->mergeCells($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $filaActual += 1;
+
+            $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'FIRMA Y SELLO:');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $active_sheet->getRowDimension($filaActual)->setRowHeight(80);
+            $active_sheet->mergeCells('C'.$filaActual.':D'.$filaActual);
+            $active_sheet->mergeCells('E'.$filaActual.':F'.$filaActual);
+            $filaActual += 1;
+
+            $idUsuarioActual = Auth::id();
+            $usuarioActual = Admin::find($idUsuarioActual);
+            $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'SERVIDOR PÚBLICO:');
+            $active_sheet->setCellValue($columna[$letraColumnaInicio + 1].$filaActual, $usuarioActual->name);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $active_sheet->mergeCells('C'.$filaActual.':D'.$filaActual);
+            $active_sheet->mergeCells('E'.$filaActual.':F'.$filaActual);
+            $filaActual += 1;
+
+            $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'ACTIVIDAD:');
+            $active_sheet->setCellValue('B'.$filaActual, 'CONTROL PREVIO');
+            $active_sheet->setCellValue('C'.$filaActual, 'CONTROL PREVIO AL COMPROMISO');
+            $active_sheet->setCellValue('E'.$filaActual, 'CONTROL PREVIO AL DEVENGADO');
+            $active_sheet->setCellValue('G'.$filaActual, 'CONTROL PREVIO  AL PAGO');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $active_sheet->mergeCells('C'.$filaActual.':D'.$filaActual);
+            $active_sheet->mergeCells('E'.$filaActual.':F'.$filaActual);
+            $filaActual += 1;
+
+            $fechaActual = Carbon::now()->format('d/m/Y');
+            $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'FECHA DE TRÁMITE (DÍA/MES/AÑO):');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setWrapText(true);
+            $active_sheet->setCellValue('B'.$filaActual, $fechaActual);
+            $active_sheet->setCellValue('C'.$filaActual, '____/____/____');
+            $active_sheet->setCellValue('E'.$filaActual, '____/____/____');
+            $active_sheet->setCellValue('G'.$filaActual, '____/____/____');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $active_sheet->mergeCells('C'.$filaActual.':D'.$filaActual);
+            $active_sheet->mergeCells('E'.$filaActual.':F'.$filaActual);
 
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
             $filename = "reporte.xlsx";
