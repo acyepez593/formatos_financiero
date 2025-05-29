@@ -143,6 +143,7 @@ class ReportesController extends Controller
             $filaActual += count($formatosP);
             $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getFont()->setSize(10);
             $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getAlignment()->setHorizontal('center');
 
             //Documentos Habilitantes
             $filaActual += 1;
@@ -189,12 +190,15 @@ class ReportesController extends Controller
 
                         $active_sheet->mergeCells('A'.$col.':C'.$col);
                         $active_sheet->getStyle('A'.$col.':C'.$col)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                        $active_sheet->getStyle('A'.$col.':C'.$col)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
                         //Calculo de ancho requerido
                         $largo = strlen($dh[$edh['campo_id']]);
                         $calculoAncho = -1;
                         if($largo >= 75){
                             $calculoAncho = ceil(ceil($largo/75) * 15);
+                        }else{
+                            $calculoAncho = 30;
                         }
                         $active_sheet->getRowDimension($col)->setRowHeight($calculoAncho);
 
@@ -202,6 +206,8 @@ class ReportesController extends Controller
                         $active_sheet->setCellValue($columna[$letraColumnaInicio+2].$col, $dh[$edh['campo_id']]);
                         $active_sheet->getStyle($columna[$letraColumnaInicio+2].$col)->getFont()->setSize(10);
                         $active_sheet->getStyle($columna[$letraColumnaInicio+2].$col)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                        $active_sheet->getStyle($columna[$letraColumnaInicio+2].$col)->getAlignment()->setHorizontal('center');
+                        $active_sheet->getStyle($columna[$letraColumnaInicio+2].$col)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                     }
 
                     $col += 1;
@@ -240,6 +246,7 @@ class ReportesController extends Controller
             $filaActual += count($resumenR);
             $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getFont()->setSize(10);
             $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getAlignment()->setHorizontal('center');
 
             //Liquidación Económica
             $filaActual += 1;
@@ -270,7 +277,7 @@ class ReportesController extends Controller
             $filaActual += count($liquidacionE);
             $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getFont()->setSize(10);
             $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
+            $active_sheet->getStyle('B'.$numColumnaInicio.':'. $columna[$letraColumnaInicio - 1].$filaActual)->getAlignment()->setHorizontal('center');
 
             //Footer
             $filaActual += 1;
@@ -295,7 +302,7 @@ class ReportesController extends Controller
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            $active_sheet->getRowDimension($filaActual)->setRowHeight(80);
+            $active_sheet->getRowDimension($filaActual)->setRowHeight(100);
             $active_sheet->mergeCells('C'.$filaActual.':D'.$filaActual);
             $active_sheet->mergeCells('E'.$filaActual.':F'.$filaActual);
             $filaActual += 1;
@@ -327,17 +334,23 @@ class ReportesController extends Controller
 
             $fechaActual = Carbon::now()->format('d/m/Y');
             $active_sheet->setCellValue($columna[$letraColumnaInicio].$filaActual, 'FECHA DE TRÁMITE (DÍA/MES/AÑO):');
-            $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setWrapText(true);
+            $active_sheet->getRowDimension($filaActual)->setRowHeight(40);
             $active_sheet->setCellValue('B'.$filaActual, $fechaActual);
+            $active_sheet->getStyle('B'.$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $active_sheet->setCellValue('C'.$filaActual, '____/____/____');
+            $active_sheet->getStyle('C'.$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $active_sheet->setCellValue('E'.$filaActual, '____/____/____');
+            $active_sheet->getStyle('E'.$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $active_sheet->setCellValue('G'.$filaActual, '____/____/____');
+            $active_sheet->getStyle('G'.$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getFont()->setBold(true)->setSize(10);
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getAlignment()->setHorizontal('center');
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             $active_sheet->getStyle($columna[$letraColumnaInicio].$filaActual.':G'.$filaActual)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $active_sheet->mergeCells('C'.$filaActual.':D'.$filaActual);
             $active_sheet->mergeCells('E'.$filaActual.':F'.$filaActual);
+
+            $active_sheet->getStyle('A1:G'.$filaActual)->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
             $filename = "reporte.xlsx";

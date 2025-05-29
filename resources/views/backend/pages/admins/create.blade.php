@@ -86,13 +86,6 @@ Admin Create - Admin Panel
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group col-md-6 col-sm-6">
-                                <label for="username">Iniciales del Usuario</label>
-                                <input type="text" class="form-control" id="initials" name="initials" onkeyup="this.value = this.value.toUpperCase();" placeholder="Ingrese las iniciales de usuario" required value="{{ old('initials') }}">
-                            </div>
-                        </div>
-                        
                         <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Guardar</button>
                         <a href="{{ route('admin.admins.index') }}" class="btn btn-secondary mt-4 pr-4 pl-4">Cancelar</a>
                     </form>

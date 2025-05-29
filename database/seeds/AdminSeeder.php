@@ -24,5 +24,16 @@ class AdminSeeder extends Seeder
             $admin->save();
         }
 
+        $admin = Admin::where('username', 'alexandra.carrera')->first();
+
+        if (is_null($admin)) {
+            $admin           = new Admin();
+            $admin->name     = "Alexandra Carrera";
+            $admin->email    = "alexandra.carrera@sppat.gob.ec";
+            $admin->username = "alexandra.carrera";
+            $admin->password = Hash::make('alexandra.carrera123');
+            $admin->save();
+        }
+
     }
 }
