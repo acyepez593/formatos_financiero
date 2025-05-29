@@ -36,6 +36,11 @@ class ListaSeeder extends Seeder
                 'descripcion' => 'ESTRUCTURA FORMATO PAGO FALLECIMIENTOS',
                 'tipo_formato_id' => 1,
                 'estructura' => '[{"campo_id":"detalle","texto":"Detalle","required":"required","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"subtotal","texto":"Subtotal","required":"required","readonly":"","type":"text","class":"decimal-number","onchange":"calcularTotalPorFila(id)"},{"campo_id":"iva","texto":"IVA","required":true,"readonly":"","type":"text","class":"decimal-number","onchange":"calcularTotalPorFila(id)"},{"campo_id":"total","texto":"Total","required":"required","readonly":"readonly","type":"text","class":"decimal-number","onchange":""}]'
+            ],
+            [
+                'descripcion' => 'ESTRUCTURA FORMATO PAGO FUNERARIOS',
+                'tipo_formato_id' => 2,
+                'estructura' => '[{"campo_id":"detalle","texto":"Detalle","required":"required","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"subtotal","texto":"Subtotal","required":"required","readonly":"","type":"text","class":"decimal-number","onchange":"calcularTotalPorFila(id)"},{"campo_id":"iva","texto":"IVA","required":true,"readonly":"","type":"text","class":"decimal-number","onchange":"calcularTotalPorFila(id)"},{"campo_id":"total","texto":"Total","required":"required","readonly":"readonly","type":"text","class":"decimal-number","onchange":""}]'
             ]
         ];
         foreach ($EstructurasFormatoPago as $value) {
@@ -48,6 +53,11 @@ class ListaSeeder extends Seeder
                 'descripcion' => 'ESTRUCTURA DOCUMENTOS HABILITANTES FALLECIMIENTOS',
                 'tipo_formato_id' => 1,
                 'estructura' => '{"mostrarHeader":true,"estructura":[{"campo_id":"documento","texto":"Documento y/o Requisitos","required":"required","readonly":"readonly","type":"text","class":"","onchange":""},{"campo_id":"estatus","texto":"Estatus","required":"","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"observacion","texto":"Observación","required":"","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"fecha","texto":"Fecha","required":"","readonly":"","type":"text","class":"","onchange":""}],"documentos":["Solicitud de autorización del pago.","Solicitud de Autorización del gasto maxima autoridad.","Certificación presupuestaria.","Solicitud de emisión de certificación presupuestaria.","Certificación POA","Solicitud emision de Certificación POA.","Memorando Direccion de Asesoría Juridica.","Partida defunción original emitida por el registro Civil.","Copia del parte policial (firma y sello) debidamente validado por la autorida competente.","Copia del protocolo de autopista; y/o copia de la historia clínica correspondiente al día de fallecimiento.","Certificado Bancario del beneficiario, de institucion financiera reconocida y aprobada por parte de la superintendencia de Bancos. (no se aceptan certificados bancarios que reciban bonos y pensiones del MIESS, cuentas Mi Vecino, cuentas Experta, conforme señala el INSTRUCTIVO GESTION DE GIRO Y TRANSFERENCIAS DEL MINISTERIO DE FINANZAS BIRF 710-EC).","Posesión efectiva de bienes, realizada ante Notario Público.","Direción domiciliaria exacta, números telefónicos; y, correo electrónico de la persona beneficiaria de las protecciones."]}'
+            ],
+            [
+                'descripcion' => 'ESTRUCTURA DOCUMENTOS HABILITANTES FUNERARIOS',
+                'tipo_formato_id' => 2,
+                'estructura' => '{"mostrarHeader":true,"estructura":[{"campo_id":"documento","texto":"Documento y/o Requisitos","required":"required","readonly":"readonly","type":"text","class":"","onchange":""},{"campo_id":"estatus","texto":"Estatus","required":"","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"observacion","texto":"Observación","required":"","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"fecha","texto":"Fecha","required":"","readonly":"","type":"text","class":"","onchange":""}],"documentos":["Solicitud de autorización del pago.","Solicitud de Autorización del gasto maxima autoridad","Certificación presupuestaria.","Solicitud de emisión de certificación presupuestaria.","Certificación POA","Solicitud emision de Certificación POA.","Factura de respaldo de los servicios, a nombre de uno de los beneficiarios.","Certificado Bancario del beneficiario, de institución financiera reconocida y aprobada por parte de la superintendencia de Bancos y/o de la Superintendencia de Economía Popular y Solidaria.   (no se aceptan certificados bancarios que reciban bonos y pensiones del MIESS, cuentas Mi Vecino, cuentas Experta, conforme señala el INSTRUCTIVO GESTION DE GIRO Y TRANSFERENCIAS DEL MINISTERIO DE FINANZAS BIRF 710-EC)."]}'
             ]
         ];
         foreach ($EstructurasDocumentosHabilitantes as $value) {
@@ -60,6 +70,11 @@ class ListaSeeder extends Seeder
                 'descripcion' => 'ESTRUCTURA RESUMEN REMESA FALLECIMIENTOS',
                 'tipo_formato_id' => 1,
                 'estructura' => '[{"campo_id":"nro_fallecidos","texto":"NRO. FALLECIDOS","required":"required","readonly":"","type":"text","class":"int-number","onchange":""},{"campo_id":"nro_beneficiarios","texto":"NRO. BENEFICIARIOS","required":"required","readonly":"","type":"text","class":"int-number","onchange":""},{"campo_id":"pagos_restantes","texto":"PAGOS RESTANTES","required":"required","readonly":"","type":"text","class":"int-number","onchange":""}]'
+            ],
+            [
+                'descripcion' => 'ESTRUCTURA RESUMEN REMESA FUNERARIOS',
+                'tipo_formato_id' => 2,
+                'estructura' => '{"mostrarHeader":true,"estructura":[{"campo_id":"documento","texto":"Documento y/o Requisitos","required":"required","readonly":"readonly","type":"text","class":"","onchange":""},{"campo_id":"estatus","texto":"Estatus","required":"","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"observacion","texto":"Observación","required":"","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"fecha","texto":"Fecha","required":"","readonly":"","type":"text","class":"","onchange":""}],"documentos":["Solicitud de autorización del pago.","Solicitud de Autorización del gasto maxima autoridad","Certificación presupuestaria.","Solicitud de emisión de certificación presupuestaria.","Certificación POA","Solicitud emision de Certificación POA.","Factura de respaldo de los servicios, a nombre de uno de los beneficiarios.","Certificado Bancario del beneficiario, de institución financiera reconocida y aprobada por parte de la superintendencia de Bancos y/o de la Superintendencia de Economía Popular y Solidaria.   (no se aceptan certificados bancarios que reciban bonos y pensiones del MIESS, cuentas Mi Vecino, cuentas Experta, conforme señala el INSTRUCTIVO GESTION DE GIRO Y TRANSFERENCIAS DEL MINISTERIO DE FINANZAS BIRF 710-EC)."]}'
             ]
         ];
         foreach ($EstructurasResumenRemesa as $value) {
@@ -71,6 +86,11 @@ class ListaSeeder extends Seeder
             [
                 'descripcion' => 'ESTRUCTURA LIQUIDACION ECONOMICA FALLECIMIENTOS',
                 'tipo_formato_id' => 1,
+                'estructura' => '{"direccion_header":"vertical","numero_columnas":"1","estructura":[{"campo_id":"subtotal","texto":"Subtotal","required":"required","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"iva","texto":"IVA","required":"required","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"saldo","texto":"SALDO","required":"required","readonly":"","type":"text","class":"","onchange":""}]}'
+            ],
+            [
+                'descripcion' => 'ESTRUCTURA LIQUIDACION ECONOMICA FUNERARIOS',
+                'tipo_formato_id' => 2,
                 'estructura' => '{"direccion_header":"vertical","numero_columnas":"1","estructura":[{"campo_id":"subtotal","texto":"Subtotal","required":"required","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"iva","texto":"IVA","required":"required","readonly":"","type":"text","class":"","onchange":""},{"campo_id":"saldo","texto":"SALDO","required":"required","readonly":"","type":"text","class":"","onchange":""}]}'
             ]
         ];

@@ -286,11 +286,39 @@ Crear Control Previo - Admin Panel
             todayHighlight: true,
         });
 
+        $('#mes').datepicker( {
+            language: 'es', 
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            format: 'MM-yyyy',
+            viewMode: "months",
+            minViewMode: "months",
+            todayHighlight: true,
+            autoclose: true,
+            onClose: function(dateText, inst) { 
+                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+            }
+        });
+
         $( "#tipo_formato_id" ).on( "change", function() {
             $("#overlay").fadeIn(300);
             $('#dataTableFormaPago').empty();
+            $('#dataTableDocumentosHabilitantes').empty();
+            $('#dataResumenRemesa').empty();
+            $('#dataTableLiquidacionEconomica').empty();
 
             var tabla = $('#dataTableFormaPago');
+            var thead = $('<thead></thead>').appendTo(tabla);
+            var tbody = $('<tbody><tbody/>').appendTo(tabla);
+            table = "";
+
+            tabla = $('#dataTableDocumentosHabilitantes');
+            var thead = $('<thead></thead>').appendTo(tabla);
+            var tbody = $('<tbody><tbody/>').appendTo(tabla);
+            table = "";
+
+            tabla = $('#dataTableLiquidacionEconomica');
             var thead = $('<thead></thead>').appendTo(tabla);
             var tbody = $('<tbody><tbody/>').appendTo(tabla);
             table = "";
@@ -354,7 +382,6 @@ Crear Control Previo - Admin Panel
                         }
                         tableHeaderRefDocHab.insertRow().innerHTML = headerDocumentosHabilitantes;
                     }
-                    
                     addRowDocumentosHabilitantes(estructurasDocumentosHabilitantes);
 
                     //Resumen Remesa
@@ -478,7 +505,7 @@ Crear Control Previo - Admin Panel
 
         for (let documento of estructurasDocumentosHabilitantes.documentos) {
             let innerHTML = "";
-            innerHTML += '<td>' + documento + '</td>';
+            innerHTML += '<td width="50%">' + documento + '</td>';
             for (let estructuraDocumentosHabilitantes of estructurasDocumentosHabilitantes.estructura) {
                 if(estructuraDocumentosHabilitantes.campo_id != "documento" ){
                     let id = estructuraDocumentosHabilitantes.campo_id + "_"+contadorDocH;
@@ -625,22 +652,24 @@ Crear Control Previo - Admin Panel
         }
 
         $('#dataTableDocumentosHabilitantes tr').each(function(){
-            let jsonObj = {};
-            let column = 0;
-            
-            jsonObj[headerDocumentosHabilitantes[column]] = "";
-            $(this).find('td').each(function(){
-                if(headerDocumentosHabilitantes[column] !== undefined){
-                    if(column == 0){
-                        jsonObj[headerDocumentosHabilitantes[column]] = this.textContent;
-                    }else{
-                        jsonObj[headerDocumentosHabilitantes[column]] = $($(this).context.children).val();
+            if($(this).find('td').length > 0){
+                let jsonObj = {};
+                let column = 0;
+                
+                jsonObj[headerDocumentosHabilitantes[column]] = "";
+                $(this).find('td').each(function(){
+                    if(headerDocumentosHabilitantes[column] !== undefined){
+                        if(column == 0){
+                            jsonObj[headerDocumentosHabilitantes[column]] = this.textContent;
+                        }else{
+                            jsonObj[headerDocumentosHabilitantes[column]] = $($(this).context.children).val();
+                        }
                     }
-                }
-                column ++;
-            })
-            jsonArrObjDocumentosHabilitantes.push(jsonObj);
-            //rowDocumentosHabilitantes ++;
+                    column ++;
+                })
+                jsonArrObjDocumentosHabilitantes.push(jsonObj);
+                //rowDocumentosHabilitantes ++;
+            }
         })
         documentosHabilitantes = jsonArrObjDocumentosHabilitantes;
         console.log(documentosHabilitantes);
