@@ -356,4 +356,5 @@ class ControlesPreviosController extends Controller
             return response()->download($myFile, $newName, $headers);
         }
     }
+
 }

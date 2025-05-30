@@ -14,13 +14,12 @@ use App\Http\Controllers\Backend\API\RegisterController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-   
+
 Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
 });
 
 Route::middleware('auth:sanctum')->group( function () {
-    //Route::get('/getCantonByProvincia/{provincia_id}','backend\CantonesController@getCantonByProvincia');
-    //Route::post('/getCantonByProvincia','backend\CantonesController@getCantonByProvincia');
+    //Route::post('/getControlPrevioById','backend\ControlesPreviosController@getControlPrevioById');
 });
