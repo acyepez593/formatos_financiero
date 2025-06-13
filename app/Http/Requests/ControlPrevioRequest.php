@@ -29,8 +29,8 @@ class ControlPrevioRequest extends FormRequest
             'fecha_tramite' => 'required',
             'solicitud_pago' => 'required|max:100',
             'objeto' => 'required|max:200',
-            'beneficiario' => 'required|max:200',
-            'ruc' => 'required|max:13',
+            'beneficiario' => 'max:200',
+            'ruc' => 'max:13',
             'mes' => 'required',
             'valor' => 'required'
 

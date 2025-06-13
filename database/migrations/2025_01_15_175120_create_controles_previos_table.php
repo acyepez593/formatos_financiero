@@ -20,11 +20,13 @@ return new class extends Migration
             $table->date('fecha_tramite');
             $table->string('solicitud_pago');
             $table->index('solicitud_pago');
+            $table->string('contrato')->nullable();
+            $table->index('contrato');
             $table->string('objeto');
             $table->index('objeto');
-            $table->string('beneficiario');
+            $table->string('beneficiario')->nullable();
             $table->index('beneficiario');
-            $table->string('ruc');
+            $table->string('ruc')->nullable();
             $table->index('ruc');
             $table->date('mes');
             $table->string('valor');

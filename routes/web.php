@@ -42,8 +42,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post('/getControlesPreviosByFilters','backend\ControlesPreviosController@getControlesPreviosByFilters')->middleware('auth:admin');
 Route::post('/getFormatoByTipoFormato','backend\ControlesPreviosController@getFormatoByTipoFormato')->middleware('auth:admin');
-Route::post('/getControlesPreviosByTipoFormato','backend\ReportesController@getControlesPreviosByTipoFormato')->middleware('auth:admin');
 Route::post('/generarReporteById','backend\ReportesController@generarReporteById')->middleware('auth:admin');
+Route::post('/getControlesPreviosByTipoFormato','backend\ReportesController@getControlesPreviosByTipoFormato')->middleware('auth:admin');
+Route::post('/generarReporteRecepcionSeguimientoSolicitudadPago','backend\ReportesController@generarReporteRecepcionSeguimientoSolicitudadPago')->middleware('auth:admin');
 
 /**
  * Admin routes

@@ -119,19 +119,25 @@
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
+                                                <label for="contrato_search">Buscar por contrato</label>
+                                                <input type="text" class="form-control" id="contrato_search" name="contrato_search" placeholder="">
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12">
                                                 <label for="objeto_search">Buscar por Objeto</label>
                                                 <input type="text" class="form-control" id="objeto_search" name="objeto_search" placeholder="">
                                             </div>    
+                                        </div>
+                                        <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
                                                 <label for="beneficiario_search">Buscar por Beneficiario</label>
                                                 <input type="text" class="form-control" id="beneficiario_search" name="beneficiario_search" placeholder="">
                                             </div>
-                                        </div>
-                                        <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
                                                 <label for="ruc_search">Buscar por RUC</label>
                                                 <input type="text" class="form-control" id="ruc_search" name="ruc_search" placeholder="">
                                             </div>
+                                        </div>
+                                        <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
                                                 <label for="mes_search">Buscar por Mes</label>
                                                 <div class="datepicker date input-group">
@@ -141,12 +147,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
                                                 <label for="valor_search">Buscar por Valor</label>
                                                 <input type="text" class="form-control" id="valor_search" name="valor_search" placeholder="">
                                             </div>
+                                        </div>
+                                        <div class="form-row">
                                             <div class="form-group col-md-6 col-sm-12">
                                                 <label for="creado_por_id_search">Buscar por Creador por:</label>
                                                 <select id="creado_por_id_search" name="creado_por_id_search" class="form-control selectpicker" data-live-search="true" multiple>
@@ -284,6 +290,7 @@
                     nro_control_previo_y_concurrente_search: $('#nro_control_previo_y_concurrente_search').val(),
                     fecha_tramite_search: $('#fecha_tramite_search').val(),
                     solicitud_pago_search: $('#solicitud_pago_search').val(),
+                    contrato_search: $('#contrato_search').val(),
                     objeto_search: $('#objeto_search').val(),
                     beneficiario_search: $('#beneficiario_search').val(),
                     ruc_search: $('#ruc_search').val(),
@@ -315,6 +322,7 @@
                         "<th># Control Previo</th>"+
                         "<th>Fecha Trámite</th>"+
                         "<th>Solicitud de Pago</th>"+
+                        "<th>Contrato</th>"+
                         "<th>Objeto</th>"+
                         "<th>Beneficiario</th>"+
                         "<th>RUC</th>"+
@@ -346,6 +354,7 @@
                             "<td>"+ registro.nro_control_previo_y_concurrente+ "</td>"+
                             "<td>"+ registro.fecha_tramite+ "</td>"+
                             "<td>"+ registro.solicitud_pago+ "</td>"+
+                            "<td>"+ registro.contrato+ "</td>"+
                             "<td>"+ registro.objeto+ "</td>"+
                             "<td>"+ registro.beneficiario+ "</td>"+
                             "<td>"+ registro.ruc+ "</td>"+

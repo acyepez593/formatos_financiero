@@ -86,6 +86,7 @@ class ControlesPreviosController extends Controller
         $controlPrevio->nro_control_previo_y_concurrente = $request->nro_control_previo_y_concurrente;
         $controlPrevio->fecha_tramite = $request->fecha_tramite;
         $controlPrevio->solicitud_pago = $request->solicitud_pago;
+        $controlPrevio->contrato = $request->contrato;
         $controlPrevio->objeto = $request->objeto;
         $controlPrevio->beneficiario = $request->beneficiario;
         $controlPrevio->ruc = $request->ruc;
@@ -170,6 +171,7 @@ class ControlesPreviosController extends Controller
         $controlPrevio->nro_control_previo_y_concurrente = $request->nro_control_previo_y_concurrente;
         $controlPrevio->fecha_tramite = $request->fecha_tramite;
         $controlPrevio->solicitud_pago = $request->solicitud_pago;
+        $controlPrevio->contrato = $request->contrato;
         $controlPrevio->objeto = $request->objeto;
         $controlPrevio->beneficiario = $request->beneficiario;
         $controlPrevio->ruc = $request->ruc;
@@ -281,6 +283,9 @@ class ControlesPreviosController extends Controller
         }
         if(isset($filtroSolicitudPagoSearch) && !empty($filtroSolicitudPagoSearch)){
             $controlesPrevios = $controlesPrevios->where('solicitud_pago', 'like', '%'.$filtroSolicitudPagoSearch.'%');
+        }
+        if(isset($filtroContratoSearch) && !empty($filtroContratoSearch)){
+            $controlesPrevios = $controlesPrevios->where('contrato', 'like', '%'.$filtroContratoSearch.'%');
         }
         if(isset($filtroObjetoSearch) && !empty($filtroObjetoSearch)){
             $controlesPrevios = $controlesPrevios->where('objeto', 'like', '%'.$filtroObjetoSearch.'%');

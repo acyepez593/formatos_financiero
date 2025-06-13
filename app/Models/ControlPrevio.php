@@ -27,8 +27,6 @@ class ControlPrevio extends Authenticatable
         'fecha_tramite',
         'solicitud_pago',
         'objeto',
-        'beneficiario',
-        'ruc',
         'mes',
         'valor'
     ];

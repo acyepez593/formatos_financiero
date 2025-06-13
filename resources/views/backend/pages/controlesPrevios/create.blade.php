@@ -54,6 +54,19 @@ Crear Control Previo - Admin Panel
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
+                                <label for="tipo_formato_id">Seleccione un Formato:</label>
+                                <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true">
+                                    @foreach ($tiposFormato as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                                @error('tipo_formato_id')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-sm-12">
                                 <label for="nro_control_previo_y_concurrente">Informe de Control Previo y Control Concurrente No.</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control @error('nro_control_previo_y_concurrente') is-invalid @enderror" id="nro_control_previo_y_concurrente" name="nro_control_previo_y_concurrente" placeholder="" value="{{ old('nro_control_previo_y_concurrente') }}" maxlength="100" required>
@@ -86,6 +99,17 @@ Crear Control Previo - Admin Panel
                                 </div>
                             </div>
                             <div class="form-group col-md-6 col-sm-12">
+                                <label for="contrato">Contrato</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control @error('contrato') is-invalid @enderror" id="contrato" name="contrato" placeholder="" value="{{ old('contrato') }}" maxlength="100">
+                                    @error('contrato')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-sm-12">
                                 <label for="objeto">Objeto</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control @error('objeto') is-invalid @enderror" id="objeto" name="objeto" placeholder="" value="{{ old('objeto') }}" maxlength="1000" required>
@@ -94,28 +118,26 @@ Crear Control Previo - Admin Panel
                                     @enderror
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="beneficiario">Beneficiario</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control @error('beneficiario') is-invalid @enderror" id="beneficiario" name="beneficiario" placeholder="" value="{{ old('beneficiario') }}" maxlength="1000" required>
+                                    <input type="text" class="form-control @error('beneficiario') is-invalid @enderror" id="beneficiario" name="beneficiario" placeholder="" value="{{ old('beneficiario') }}" maxlength="1000">
                                     @error('beneficiario')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="ruc">RUC</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control @error('ruc') is-invalid @enderror" id="ruc" name="ruc" placeholder="" value="{{ old('ruc') }}" minlength="13" maxlength="13" required>
+                                    <input type="text" class="form-control @error('ruc') is-invalid @enderror" id="ruc" name="ruc" placeholder="" value="{{ old('ruc') }}" minlength="13" maxlength="13">
                                     @error('ruc')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="mes">Mes</label>
                                 <div class="datepicker date input-group">
@@ -128,6 +150,8 @@ Crear Control Previo - Admin Panel
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="valor">Valor</label>
                                 <div class="input-group mb-3">
@@ -136,19 +160,6 @@ Crear Control Previo - Admin Panel
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6 col-sm-12">
-                                <label for="tipo_formato_id">Seleccione un Formato:</label>
-                                <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true">
-                                    @foreach ($tiposFormato as $key => $value)
-                                        <option value="{{ $key }}">{{ $value }}</option>
-                                    @endforeach
-                                </select>
-                                @error('tipo_formato_id')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                         <div class="form-group col-md-12 col-sm-12">

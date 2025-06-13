@@ -186,8 +186,8 @@
                             @if ($usr->can('reporteControlPrevio.view'))
                                 <li class="{{ Route::is('admin.reportes.index')  ? 'active' : '' }}"><a href="{{ route('admin.reportes.index') }}">Reporte Control Previo</a></li>
                             @endif
-                            @if ($usr->can('reporteControlPrevio.view'))
-                                <li class="{{ Route::is('admin.reportes.create')  ? 'active' : '' }}"><a href="{{ route('admin.reportes.create') }}">Generar Reporte</a></li>
+                            @if ($usr->can('reporteRecepcionSeguimientoSolicitudPago.view'))
+                                <li class="{{ Route::is('admin.reportes.create')  ? 'active' : '' }}"><a href="{{ route('admin.reportes.create') }}">Generar Reporte de Recepción y Seguimiento de Solicitudes de Pago </a></li>
                             @endif
                         </ul>
                     </li>

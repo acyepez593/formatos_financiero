@@ -51,6 +51,19 @@ Editar Control Previo - Panel Control Previo
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
+                                <label for="tipo_formato_id">Seleccione un Formato:</label>
+                                <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true">
+                                    @foreach ($tiposFormato as $key => $value)
+                                        <option value="{{ $key }}" {{ old('tipo_formato_id', $controlPrevio->tipo_formato_id) == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                                @error('tipo_formato_id')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-sm-12">
                                 <label for="nro_control_previo_y_concurrente">Informe de Control Previo y Control Concurrente No.</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control @error('nro_control_previo_y_concurrente') is-invalid @enderror" id="nro_control_previo_y_concurrente" name="nro_control_previo_y_concurrente" placeholder="" value="{{ old('nro_control_previo_y_concurrente', $controlPrevio->nro_control_previo_y_concurrente) }}" maxlength="100" required>
@@ -83,6 +96,17 @@ Editar Control Previo - Panel Control Previo
                                 </div>
                             </div>
                             <div class="form-group col-md-6 col-sm-12">
+                                <label for="contrato">Contraro</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control @error('contrato') is-invalid @enderror" id="contrato" name="contrato" placeholder="" value="{{ old('contrato', $controlPrevio->contrato) }}" maxlength="100">
+                                    @error('contrato')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-sm-12">
                                 <label for="objeto">Objeto</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control @error('objeto') is-invalid @enderror" id="objeto" name="objeto" placeholder="" value="{{ old('objeto', $controlPrevio->objeto) }}" maxlength="1000" required>
@@ -91,28 +115,26 @@ Editar Control Previo - Panel Control Previo
                                     @enderror
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="beneficiario">Beneficiario</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control @error('beneficiario') is-invalid @enderror" id="beneficiario" name="beneficiario" placeholder="" value="{{ old('beneficiario', $controlPrevio->beneficiario) }}" maxlength="1000" required>
+                                    <input type="text" class="form-control @error('beneficiario') is-invalid @enderror" id="beneficiario" name="beneficiario" placeholder="" value="{{ old('beneficiario', $controlPrevio->beneficiario) }}" maxlength="1000">
                                     @error('beneficiario')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="ruc">RUC</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control @error('ruc') is-invalid @enderror" id="ruc" name="ruc" placeholder="" value="{{ old('ruc', $controlPrevio->ruc) }}" minlength="13" maxlength="13" required>
+                                    <input type="text" class="form-control @error('ruc') is-invalid @enderror" id="ruc" name="ruc" placeholder="" value="{{ old('ruc', $controlPrevio->ruc) }}" minlength="13" maxlength="13">
                                     @error('ruc')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="mes">Mes</label>
                                 <div class="datepicker date input-group">
@@ -125,6 +147,8 @@ Editar Control Previo - Panel Control Previo
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+                        </div>
+                        <div class="form-group col-md-6 col-sm-12">
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="valor">Valor</label>
                                 <div class="input-group mb-3">
@@ -133,19 +157,6 @@ Editar Control Previo - Panel Control Previo
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6 col-sm-12">
-                                <label for="tipo_formato_id">Seleccione un Formato:</label>
-                                <select id="tipo_formato_id" name="tipo_formato_id" class="form-control selectpicker @error('tipo_formato_id') is-invalid @enderror" data-live-search="true">
-                                    @foreach ($tiposFormato as $key => $value)
-                                        <option value="{{ $key }}" {{ old('tipo_formato_id', $controlPrevio->tipo_formato_id) == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                    @endforeach
-                                </select>
-                                @error('tipo_formato_id')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                         <div class="form-group col-md-12 col-sm-12">
@@ -560,7 +571,7 @@ Editar Control Previo - Panel Control Previo
         for (let doc of estructurasDocumentosHabilitantes.documentos) {
             let result = {};
             let innerHTML = "";
-            innerHTML += '<td>' + doc + '</td>';
+            innerHTML += '<td width="50%">' + doc + '</td>';
             for (let estructuraDocumentosHabilitantes of estructurasDocumentosHabilitantes.estructura) {
                 if(estructuraDocumentosHabilitantes.campo_id != "documento" ){
                     let id = estructuraDocumentosHabilitantes.campo_id + "_"+contadorDocH;
@@ -722,22 +733,24 @@ Editar Control Previo - Panel Control Previo
         }
 
         $('#dataTableDocumentosHabilitantes tr').each(function(){
-            let jsonObj = {};
-            let column = 0;
-            
-            jsonObj[headerDocumentosHabilitantes[rowDocumentosHabilitantes]] = "";
-            $(this).find('td').each(function(){
-                if(headerDocumentosHabilitantes[column] !== undefined){
-                    if(column == 0){
-                        jsonObj[headerDocumentosHabilitantes[column]] = this.textContent;
-                    }else{
-                        jsonObj[headerDocumentosHabilitantes[column]] = $($(this).context.children).val();
+            if($(this).find('td').length > 0){
+                let jsonObj = {};
+                let column = 0;
+                
+                jsonObj[headerDocumentosHabilitantes[column]] = "";
+                $(this).find('td').each(function(){
+                    if(headerDocumentosHabilitantes[column] !== undefined){
+                        if(column == 0){
+                            jsonObj[headerDocumentosHabilitantes[column]] = this.textContent;
+                        }else{
+                            jsonObj[headerDocumentosHabilitantes[column]] = $($(this).context.children).val();
+                        }
                     }
-                }
-                column ++;
-            })
-            jsonArrObjDocumentosHabilitantes.push(jsonObj);
-            rowDocumentosHabilitantes ++;
+                    column ++;
+                })
+                jsonArrObjDocumentosHabilitantes.push(jsonObj);
+                //rowDocumentosHabilitantes ++;
+            }
         })
         documentosHabilitantes = jsonArrObjDocumentosHabilitantes;
         console.log(documentosHabilitantes);

@@ -22,6 +22,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Spatie\Permission\Models\Role;
@@ -42,14 +43,14 @@ class ReportesController extends Controller
 
     public function create(): Renderable
     {
-        $this->checkAuthorization(auth()->user(), ['reporte.view']);
+        $this->checkAuthorization(auth()->user(), ['reporteControlPrevio.view']);
 
         $tiposFormato = TipoFormato::get(["nombre", "id"]);
-        $servidoresPublicos = Admin::get(["name", "id"]);
+        $analistas = Admin::get(["name", "id"]);
 
         return view('backend.pages.reportes.create', [
             'tiposFormato' => $tiposFormato,
-            'servidoresPublicos' => $servidoresPublicos
+            'analistas' => $analistas
         ]);
     }
 
@@ -363,33 +364,32 @@ class ReportesController extends Controller
         }else{
             return false;
         }
-
     }
 
-    public function generarReporteByTipoReporte(Request $request)
+    public function generarReporteRecepcionSeguimientoSolicitudadPago(Request $request)
     {
-        $this->checkAuthorization(auth()->user(), ['reporte.download']);
+        $this->checkAuthorization(auth()->user(), ['reporteRecepcionSeguimientoSolicitudPago.download']);
 
         ini_set('memory_limit', '-1'); // anula el limite 
 
         $controlesPrevios = ControlPrevio::where('id',">",0);
 
         $filtroTipoFormatoIdSearch = json_decode($request->tipo_formato_id_search, true);
-        $filtroNroControlPrevioConcurrenteSearch = $request->nro_control_previo_y_concurrente_search;
+        $filtroMesSearch = $request->mes_search;
+        $filtroCreadoPorIdSearch = json_decode($request->creado_por_id_search, true);
         $filtroFechaTramiteSearch = $request->fecha_tramite_search;
         $filtroSolicitudPagoSearch = $request->solicitud_pago_search;
         $filtroObjetoSearch = $request->objeto_search;
-        $filtroBeneficiarioSearch = $request->beneficiario_search;
-        $filtroRucSearch = $request->ruc_search;
-        $filtroMesSearch = $request->mes_search;
         $filtroValorSearch = $request->valor_search;
-        $filtroCreadoPorIdSearch = json_decode($request->creado_por_id_search, true);
 
         if(isset($filtroTipoFormatoIdSearch) && !empty($filtroTipoFormatoIdSearch)){
             $controlesPrevios = $controlesPrevios->whereIn('tipo_formato_id', $filtroTipoFormatoIdSearch);
         }
-        if(isset($filtroNroControlPrevioConcurrenteSearch) && !empty($filtroNroControlPrevioConcurrenteSearch)){
-            $controlesPrevios = $controlesPrevios->where('nro_control_previo_y_concurrente', 'like', '%'.$filtroNroControlPrevioConcurrenteSearch.'%');
+        if(isset($filtroMesSearch) && !empty($filtroMesSearch)){
+            $controlesPrevios = $controlesPrevios->where('mes', 'like', '%'.$filtroMesSearch.'%');
+        }
+        if(isset($filtroCreadoPorIdSearch) && !empty($filtroCreadoPorIdSearch)){
+            $controlesPrevios = $controlesPrevios->whereIn('creado_por_id', $filtroCreadoPorIdSearch);
         }
         if(isset($filtroFechaTramiteSearch) && !empty($filtroFechaTramiteSearch)){
             $controlesPrevios = $controlesPrevios->where('fecha_tramite', 'like', '%'.$filtroFechaTramiteSearch.'%');
@@ -400,35 +400,38 @@ class ReportesController extends Controller
         if(isset($filtroObjetoSearch) && !empty($filtroObjetoSearch)){
             $controlesPrevios = $controlesPrevios->where('objeto', 'like', '%'.$filtroObjetoSearch.'%');
         }
-        if(isset($filtroBeneficiarioSearch) && !empty($filtroBeneficiarioSearch)){
-            $controlesPrevios = $controlesPrevios->where('beneficiario', 'like', '%'.$filtroBeneficiarioSearch.'%');
-        }
-        if(isset($filtroRucSearch) && !empty($filtroRucSearch)){
-            $controlesPrevios = $controlesPrevios->where('ruc', 'like', '%'.$filtroRucSearch.'%');
-        }
-        if(isset($filtroMesSearch) && !empty($filtroMesSearch)){
-            $controlesPrevios = $controlesPrevios->where('mes', 'like', '%'.$filtroMesSearch.'%');
-        }
         if(isset($filtroValorSearch) && !empty($filtroValorSearch)){
             $controlesPrevios = $controlesPrevios->where('valor', 'like', '%'.$filtroValorSearch.'%');
-        }
-        if(isset($filtroCreadoPorIdSearch) && !empty($filtroCreadoPorIdSearch)){
-            $controlesPrevios = $controlesPrevios->whereIn('creado_por_id', $filtroCreadoPorIdSearch);
         }
         
         $controlesPrevios = $controlesPrevios->orderBy('id', 'desc')->get();
 
-        $controlesPreviosIds = $controlesPrevios->pluck('id');
+        $listaIdsControlesPrevios = $controlesPrevios->pluck('id');
+        $resumenesRemesas = ResumenRemesa::whereIn('control_previo_id',$listaIdsControlesPrevios);
 
-        $formatosPago = FormatoPago::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
-        $documentosHabilitantes = DocumentosHabilitantes::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
-        $resumenesRemesa = ResumenRemesa::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
-        $liquidacionesEconomicas = LiquidacionEconomica::whereIn('control_previo_id',$controlesPreviosIds)->groupBy('control_previo_id');
+        $resumenesRemesasPorProteccion = DB::table('resumen_remesas')->leftJoin('estructuras_resumen_remesa', 'resumen_remesas.esctructura_resumen_remesa_id', '=', 'estructuras_resumen_remesa.id')->select('estructuras_resumen_remesa.tipo_formato_id',DB::raw('count(estructuras_resumen_remesa.tipo_formato_id) as "nro_remesas",sum(json_extract(resumen_remesas.datos, "$[0].nro_casos")) as "nro_casos"'))->groupBy('estructuras_resumen_remesa.tipo_formato_id')->get();
 
-        $tiposFormato = TipoFormato::get(["nombre", "id"]);
-        $servidoresPublicos = Admin::all();
+        $resumenesRemesas = $resumenesRemesas->get();
+        $arrResumeRemesa = [];
+        foreach ($resumenesRemesas as $resumenRemesa) {
+            $arrResumeRemesa[$resumenRemesa->control_previo_id] = $resumenRemesa->datos[0];
+        }
+        
+        $listaAnalistas = $controlesPrevios->pluck('creado_por_id');
+        $analistas = Admin::whereIn('id',$listaAnalistas)->get(['id','name']);
+        $arrAnalistas = [];
+        foreach ($analistas as $analista) {
+            $arrAnalistas[$analista->id] = $analista->name;
+        }
 
-        $fileName = 'FormatoReporteControlPrevio.xlsx';
+        $listaTiposFormatos = $controlesPrevios->pluck('tipo_formato_id');
+        $tiposFormatos = TipoFormato::whereIn('id',$listaTiposFormatos)->get(['id','nombre']);
+        $arrTiposFormatos = [];
+        foreach ($tiposFormatos as $tipoFormato) {
+            $arrTiposFormatos[$tipoFormato->id] = $tipoFormato->nombre;
+        }
+
+        $fileName = 'FormatoMatrizRecepcionYSeguimientoDeSolicitudesDePago.xlsx';
 
         if(public_path('uploads/'.$fileName)){
             $inputFileName = public_path('reporte/'.$fileName);
@@ -438,39 +441,54 @@ class ReportesController extends Controller
 
             $active_sheet = $spreadsheet->getActiveSheet();
 
-            $columna = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
-            $filaInicial = 4;
+            $columna = ['A','B','C','D','E','F','G','H','I','J','K'];
+            $filaInicial = 5;
             $fila = $filaInicial;
 
-            foreach ($controlesPrevios as $index=>$registro) {
+            foreach ($controlesPrevios as $index => $registro) {
                 
                 $active_sheet->setCellValue($columna[0].$fila, $index+1);
-                $active_sheet->setCellValue($columna[1].$fila, !isset($registro->victima) || empty($registro->victima) ? "" : $registro->victima);
-                $active_sheet->setCellValue($columna[2].$fila, !isset($registro->id_de_proteccion) || empty($registro->id_de_proteccion) ? "" : $registro->id_de_proteccion);
-                $active_sheet->setCellValue($columna[3].$fila, !isset($registro->proteccion_id) || empty($registro->proteccion_id) || $registro->proteccion_id == 0 ? "" : $protecciones[$registro->proteccion_id]);
-                $active_sheet->setCellValue($columna[4].$fila, !isset($registro->peticionario_notificado) || empty($registro->peticionario_notificado) ? "" : $registro->peticionario_notificado);
-                $active_sheet->setCellValue($columna[5].$fila, !isset($registro->nro_oficio_notificacion) || empty($registro->nro_oficio_notificacion) ? "" : $registro->nro_oficio_notificacion);
-                $active_sheet->setCellValue($columna[6].$fila, !isset($registro->fecha_notificacion) || empty($registro->fecha_notificacion)|| $registro->fecha_notificacion == '0000-00-00' ? "" : $registro->fecha_notificacion);
-                
-                $active_sheet->setCellValue($columna[7].$fila,  $lista_responsables);
-
-                $active_sheet->setCellValue($columna[8].$fila, !isset($registro->fecha_maxima_respuesta) || empty($registro->fecha_maxima_respuesta)|| $registro->fecha_maxima_respuesta == '0000-00-00' ? "" : $registro->fecha_maxima_respuesta);
-                $active_sheet->setCellValue($columna[9].$fila, !isset($registro->documentacion_solicitada) || empty($registro->documentacion_solicitada) ? "" : $registro->documentacion_solicitada);
-                $active_sheet->setCellValue($columna[10].$fila, !isset($registro->observaciones) || empty($registro->observaciones) ? "" : $registro->observaciones);
-                $active_sheet->setCellValue($columna[11].$fila, !isset($registro->tipo_respuesta_id) || empty($registro->tipo_respuesta_id) || $registro->tipo_respuesta_id == 0 ? "" : $tiposRespuesta[$registro->tipo_respuesta_id]);
-                $active_sheet->setCellValue($columna[12].$fila, !isset($registro->estado_id) || empty($registro->estado_id) || $registro->estado_id == 0 ? "" : $estados[$registro->estado_id]);
-                $active_sheet->setCellValue($columna[13].$fila, !isset($registro->tipo_ingreso_id) || empty($registro->tipo_ingreso_id) || $registro->tipo_ingreso_id == 0 ? "" : $tiposIngreso[$registro->tipo_ingreso_id]);
-                $active_sheet->setCellValue($columna[14].$fila, !isset($registro->fecha_ingreso_expediente) || empty($registro->fecha_ingreso_expediente)|| $registro->fecha_ingreso_expediente == '0000-00-00' ? "" : $registro->fecha_ingreso_expediente);
-                $active_sheet->setCellValue($columna[15].$fila, !isset($registro->semaforo_id) || empty($registro->semaforo_id) || $registro->semaforo_id == 0 ? "" : $semaforos[$registro->semaforo_id]);
-                $active_sheet->setCellValue($columna[16].$fila, !isset($registro->creado_por_id) || empty($registro->creado_por_id) || $registro->creado_por_id == 0 ? "" : $responsables[$registro->creado_por_id]);
-                $active_sheet->setCellValue($columna[17].$fila, $registro->es_historico == 1 ? "SI" : "NO");
-
+                $active_sheet->setCellValue($columna[1].$fila, !isset($registro->mes) || empty($registro->mes) ? "" : Carbon::createFromFormat('Y-m-d', $registro->mes)->format('M-Y'));
+                $active_sheet->setCellValue($columna[2].$fila, !isset($analistas) || empty($analistas) || !isset($arrAnalistas[$registro->creado_por_id]) ? "" : $arrAnalistas[$registro->creado_por_id]);
+                $active_sheet->setCellValue($columna[3].$fila, !isset($registro->fecha_tramite) || empty($registro->fecha_tramite) ? "" : Carbon::createFromFormat('Y-m-d', $registro->fecha_tramite)->format('d/m/Y'));
+                $active_sheet->setCellValue($columna[4].$fila, !isset($registro->solicitud_pago) || empty($registro->solicitud_pago) ? "" : $registro->solicitud_pago);
+                $active_sheet->setCellValue($columna[5].$fila, !isset($registro->tipo_formato_id) || empty($registro->tipo_formato_id) || !isset($arrTiposFormatos[$registro->tipo_formato_id]) ? "" : $arrTiposFormatos[$registro->tipo_formato_id]);
+                $active_sheet->setCellValue($columna[6].$fila, !isset($registro->objeto) || empty($registro->objeto) ? "" : $registro->objeto);
+                $active_sheet->setCellValue($columna[7].$fila, !isset($arrResumeRemesa) || count($arrResumeRemesa) <= 0 || !isset($arrResumeRemesa[$registro->id]['nro_beneficiarios']) ? "" : $arrResumeRemesa[$registro->id]['nro_beneficiarios']);
+                $active_sheet->setCellValue($columna[8].$fila, !isset($arrResumeRemesa) || count($arrResumeRemesa) <= 0 || !isset($arrResumeRemesa[$registro->id]['nro_casos']) ? "" : $arrResumeRemesa[$registro->id]['nro_casos']);
+                $active_sheet->setCellValue($columna[9].$fila, '');
+                $active_sheet->setCellValue($columna[10].$fila, !isset($registro->valor) || empty($registro->valor) ? "" : $registro->valor);
                 $fila += 1;
+                if($index+1 < count($listaIdsControlesPrevios)){
+                    $active_sheet->insertNewRowBefore($fila);
+                }
             }
-            $active_sheet->getStyle($columna[0].$filaInicial.':'.$columna[17].$fila-1)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
+            $columnaInicio = 8;
+
+            $active_sheet->setCellValue($columna[$columnaInicio].$fila, '=SUM('. $columna[$columnaInicio].$filaInicial . ':' . $columna[$columnaInicio].$fila-1 .')');
+            $active_sheet->setCellValue($columna[$columnaInicio+2].$fila, '=SUM('. $columna[$columnaInicio+2].$filaInicial . ':' . $columna[$columnaInicio+2].$fila-1 .')');
+
+            $fila += 4;
+            $filaInicio = $fila;
+            $columnaInicio = 5;
+            foreach($resumenesRemesasPorProteccion as $index => $resumeneRemesasPorProteccion){
+                $active_sheet->setCellValue($columna[$columnaInicio].$fila, $arrTiposFormatos[$resumeneRemesasPorProteccion->tipo_formato_id]);
+                $active_sheet->setCellValue($columna[$columnaInicio+1].$fila, $resumeneRemesasPorProteccion->nro_remesas);
+                $active_sheet->setCellValue($columna[$columnaInicio+2].$fila, $resumeneRemesasPorProteccion->nro_casos);
+                $fila += 1;
+                if($index+1 < count($resumenesRemesasPorProteccion)){
+                    $active_sheet->insertNewRowBefore($fila);
+                }
+            }
+            
+            $active_sheet->setCellValue($columna[$columnaInicio+1].$fila, '=SUM('. $columna[$columnaInicio+1].$filaInicio . ':' . $columna[$columnaInicio+1].$fila-1 .')');
+            $active_sheet->setCellValue($columna[$columnaInicio+2].$fila, '=SUM('. $columna[$columnaInicio+1].$filaInicio . ':' . $columna[$columnaInicio+2].$fila-1 .')');
+            
+            //$active_sheet->getStyle($columna[0].$filaInicial.':'.$columna[17].$fila-1)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
+
 
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $filename = "reporte.xlsx";
+            $filename = "reporteSeguimiento.xlsx";
             $writer->save(storage_path('app/'. $filename));
             $data['status'] = 200;
             $data['message'] = "OK";
